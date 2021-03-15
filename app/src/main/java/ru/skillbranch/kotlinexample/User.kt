@@ -20,7 +20,7 @@ class User private constructor(
     private val fullName: String
         get() = listOfNotNull(firstName, lastName)
             .joinToString(" ")
-            .capitalize(Locale.ROOT)
+            .capitalize()
 
     private val initials: String
         get() = listOfNotNull(firstName, lastName)
@@ -35,7 +35,7 @@ class User private constructor(
     private var _login: String? = null
     var login: String
         set(value) {
-            _login = value.toLowerCase(Locale.ROOT)
+            _login = value.toLowerCase()
         }
         get() = _login!!
 
@@ -68,13 +68,6 @@ class User private constructor(
         accessCode = code
         sendAccessCodeToUser(rawPhone, code)
     }
-//
-//    // for csv
-//    constructor(
-//            firstName: String,
-//            lastName: String?,
-//            email: String
-//    ): this (firstName, lastName, email = email, meta = mapOf("auth" to "password")) {}
 
     init {
         check(firstName.isNotBlank()) {"First name must not be blank"}
