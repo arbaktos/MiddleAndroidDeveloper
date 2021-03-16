@@ -65,17 +65,18 @@ object UserHolder {
         list.forEach { line ->
 
             val userData = line.split(";")
-            val fullName = userData[0]
-            val email = if (userData[1].isNotBlank()) userData[1] else null
-            val phone = if (userData[3].isNotBlank()) userData[3] else null
-            val passwordHash = userData[2].substringAfter(":")
+            val _fullName = userData[0]
+            val _email = if (userData[1].isNotBlank()) userData[1] else null
+            val _phone = if (userData[3].isNotBlank()) userData[3] else null
+            val _passwordHash = userData[2].substringAfter(":")
 
             val userCsv =
-                User.makeUser(fullName, email = email, phone = phone, passwordHash = passwordHash)
+                User.makeUser(_fullName, email = _email, phone = _phone, passwordHash = _passwordHash)
 
             userList.add(userCsv
                     .also { user ->
                         if(userData[2].isNotEmpty()) {
+                            user.phone = _phone
                             user.salt = userData[2].substringBefore(":")
                             if(map.containsKey(user.login)) throw IllegalArgumentException("User already exist")
                             else map[user.login] = user

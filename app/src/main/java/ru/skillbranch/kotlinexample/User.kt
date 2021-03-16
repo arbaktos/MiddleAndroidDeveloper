@@ -77,6 +77,7 @@ class User private constructor(
             rawPhone: String?,
             passwordHash: String
     ): this(firstName, lastName, email, rawPhone, meta = mapOf("src" to "csv")) {
+
         this.passwordHash = passwordHash
     }
 
@@ -156,13 +157,14 @@ class User private constructor(
             val (firstName, lastName) = fullName.fullNameToPair()
 
             return when {
-                !passwordHash.isNullOrBlank()  -> User(
-                        firstName, lastName, email = email, rawPhone = phone, passwordHash
+                !passwordHash.isNullOrBlank()  -> User (
+                        firstName, lastName, email, phone, passwordHash
                 )
                 !phone.isNullOrBlank() -> User(firstName, lastName, phone)
                 !email.isNullOrBlank() && !password.isNullOrBlank() -> User (
                     firstName, lastName, email, password
                         )
+
                 else -> throw IllegalArgumentException("Email or phone must not be null or empty")
             }
         }
