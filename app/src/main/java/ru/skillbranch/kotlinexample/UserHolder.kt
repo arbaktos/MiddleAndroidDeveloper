@@ -6,7 +6,7 @@ import java.lang.IllegalArgumentException
 object UserHolder {
 
     private val map = mutableMapOf<String, User>()
-    val phoneFormat = Regex("""^[+][\d]{11}""")
+    private val phoneFormat = Regex("""^[+][\d]{11}""")
 
     fun registerUser(
         fullName: String,
@@ -14,7 +14,7 @@ object UserHolder {
         password: String
     ) : User = User.makeUser(fullName, email = email, password = password)
         .also { user ->
-            if(map.containsKey(user.login)) throw IllegalArgumentException("User already exist")
+            if(map.containsKey(user.login)) throw IllegalArgumentException("A user with this email already exists")
             else map[user.login] = user
         }
 
@@ -34,7 +34,7 @@ object UserHolder {
     fun registerUserByPhone(fullName: String, rawPhone: String): User {
         return User.makeUser(fullName, phone = rawPhone).also { user ->
             when {
-                map.containsKey(user.login) -> throw IllegalArgumentException("User already exist")
+                map.containsKey(user.login) -> throw IllegalArgumentException("A user with this phone already exists")
                 !user.phone!!.matches(phoneFormat) -> throw IllegalArgumentException("Enter a valid phone number starting with a + and containing 11 digits")
                 else -> map[user.login] = user
             }
@@ -63,19 +63,25 @@ object UserHolder {
     fun importUsers(list: List<String>): List<User> {
         val userList = mutableListOf<User>()
         list.forEach { line ->
+
             val userData = line.split(";")
-            userList.add(User
-                    .makeUser(fullName = userData[0], email = userData[1])
+            val fullName = userData[0]
+            val email = if (userData[1].isNotBlank()) userData[1] else null
+            val phone = if (userData[3].isNotBlank()) userData[3] else null
+            val passwordHash = userData[2].substringAfter(":")
+
+            val userCsv =
+                User.makeUser(fullName, email = email, phone = phone, passwordHash = passwordHash)
+
+            userList.add(userCsv
                     .also { user ->
                         if(userData[2].isNotEmpty()) {
                             user.salt = userData[2].substringBefore(":")
-                            user.passwordHash = userData[2].substringAfter(":")
                             if(map.containsKey(user.login)) throw IllegalArgumentException("User already exist")
                             else map[user.login] = user
                         }
             })
         }
-
         return userList
     }
 }

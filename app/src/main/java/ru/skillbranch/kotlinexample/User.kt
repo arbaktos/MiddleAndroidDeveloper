@@ -69,6 +69,17 @@ class User private constructor(
         sendAccessCodeToUser(rawPhone, code)
     }
 
+    //for csv
+    constructor(
+            firstName: String,
+            lastName: String?,
+            email: String?,
+            rawPhone: String?,
+            passwordHash: String
+    ): this(firstName, lastName, email, rawPhone, meta = mapOf("src" to "csv")) {
+        this.passwordHash = passwordHash
+    }
+
     init {
         check(firstName.isNotBlank()) {"First name must not be blank"}
         check(email.isNullOrBlank() || rawPhone.isNullOrBlank()) { "Email or phone must not be blank" }
@@ -139,15 +150,16 @@ class User private constructor(
             fullName: String,
             email: String? = null,
             password: String? = null,
-            phone: String? = null
+            phone: String? = null,
+            passwordHash: String? = null
         ): User {
             val (firstName, lastName) = fullName.fullNameToPair()
 
             return when {
-                !phone.isNullOrBlank() -> User(firstName, lastName, phone)
-                !email.isNullOrBlank() && password.isNullOrBlank() -> User(
-                        firstName, lastName, email = email, meta = mapOf("src" to "csv")
+                !passwordHash.isNullOrBlank()  -> User(
+                        firstName, lastName, email = email, rawPhone = phone, passwordHash
                 )
+                !phone.isNullOrBlank() -> User(firstName, lastName, phone)
                 !email.isNullOrBlank() && !password.isNullOrBlank() -> User (
                     firstName, lastName, email, password
                         )

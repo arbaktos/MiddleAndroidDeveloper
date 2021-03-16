@@ -33,7 +33,8 @@ class ExampleUnitTest {
     fun csv_builder() {
         val holder = UserHolder
         val user = holder.importUsers(listOf(
-                " John Doe ;JohnDoe@unknown.com;[B@7591083d:c6adb4becdc64e92857e1e2a0fd6af84;;"
+                " John Doe ;JohnDoe@unknown.com;[B@7591083d:c6adb4becdc64e92857e1e2a0fd6af84;;",
+                " John Doe ;;[B@7591083d:c6adb4becdc64e92857e1e2a0fd6af84;+79057228907;"
         ))
         val expectedInfo = """
             firstName: John
@@ -47,6 +48,7 @@ class ExampleUnitTest {
         """.trimIndent()
 
         val successResult = holder.loginUser(user[0].login, "testPass")
+        println(user[1].userInfo)
         Assert.assertEquals(expectedInfo, successResult)
     }
 
