@@ -3,7 +3,7 @@ package ru.skillbranch.kotlinexample
 import androidx.annotation.VisibleForTesting
 import java.lang.IllegalArgumentException
 
-class UserHolder {
+object UserHolder {
 
     private val map = mutableMapOf<String, User>()
     val phoneFormat = Regex("""^[+][\d]{11}""")
