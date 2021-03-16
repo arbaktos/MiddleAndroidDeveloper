@@ -60,7 +60,7 @@ object UserHolder {
         return phone.replace("""[^+\d]""".toRegex(), "")
     }
 
-    fun importUsersCsv(list: List<String>): List<User> {
+    fun importUsers(list: List<String>): List<User> {
         val userList = mutableListOf<User>()
         list.forEach { line ->
             val userData = line.split(";")
