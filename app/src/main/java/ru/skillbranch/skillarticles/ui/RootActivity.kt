@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.layout_bottom_bar.*
 import kotlinx.android.synthetic.main.layout_submenu.*
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import ru.skillbranch.skillarticles.viewmodels.ArticleViewModel
 import ru.skillbranch.skillarticles.viewmodels.Notify
 import ru.skillbranch.skillarticles.viewmodels.ViewModelFactory
@@ -41,15 +42,12 @@ class RootActivity : AppCompatActivity() {
             renderNotification(it)
         }
     }
-    var count = 0
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val logo = if(toolbar.childCount > 2)  toolbar.getChildAt(2) as ImageView else null
         logo?.scaleType = ImageView.ScaleType.CENTER_CROP
-        Log.d("RootActivity", "logo width before ${logo?.width}")
-        Log.d("RootActivity", "logo height before ${logo?.height}")
 
         (logo?.layoutParams as? Toolbar.LayoutParams)?.let {
             it.width = dpToIntPx(40)
@@ -57,15 +55,9 @@ class RootActivity : AppCompatActivity() {
             it.marginEnd = dpToIntPx(16)
             logo.layoutParams = it
         }
-        count++
-
-        Log.d("RootActivity", "logo width after ${logo?.width}")
-        Log.d("RootActivity", "logo height after ${logo?.height}")
-        Log.d("RootActivity", count.toString())
-
     }
 
-    private fun renderUi(data: ArticleViewModel.ArticleState) {
+    private fun renderUi(data: ArticleState) {
         // bind submenu state
         btn_settings.isChecked = data.isShowMenu
         if(data.isShowMenu) submenu.open() else submenu.close()
@@ -94,9 +86,6 @@ class RootActivity : AppCompatActivity() {
         toolbar.title = data.title ?: "Skill Articles"
         toolbar.subtitle = data.category ?: "loading..."
         if (data.categoryIcon != null) toolbar.logo = getDrawable(data.categoryIcon as Int)
-//        val logo = toolbar.logo
-//        logo.setBounds(1,1,1,1)
-        Log.d("RootActivity", "logo bind")
     }
 
     private fun renderNotification(notify: Notify) {

@@ -7,9 +7,8 @@ import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
 import ru.skillbranch.skillarticles.extensions.data.toAppSettings
 import ru.skillbranch.skillarticles.extensions.data.toArticlePersonalInfo
 import ru.skillbranch.skillarticles.extensions.format
-import ru.skillbranch.skillarticles.ui.RootActivity
 
-class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleViewModel.ArticleState>(ArticleState()) {
+class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleState>(ArticleState()) {
     private val repository = ArticleRepository
     private var menuIsShown : Boolean = false
 
@@ -79,7 +78,7 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleView
         val info = currentState.toArticlePersonalInfo()
         repository.updateArticlePersonalInfo(info.copy(isBookmark = !info.isBookmark))
 
-        val msg = if(currentState.isBookmark) "Add to bookmarks" else "Removed from bookmarks"
+        val msg = if(currentState.isBookmark) "Add to bookmarks" else "Remove from bookmarks"
         notify(Notify.TextMessage(msg))
     }
 
@@ -90,10 +89,10 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleView
         }
         toggleLike()
 
-        val msg = if(currentState.isLike) Notify.TextMessage("Marked as liked")
+        val msg = if(currentState.isLike) Notify.TextMessage("Mark is liked")
         else {
             Notify.ActionMessage(
-                    "Don't like it anymore?",
+                    "Don`t like it anymore",
                     "No, still like it",
                     toggleLike
             )
@@ -130,29 +129,29 @@ class ArticleViewModel(private val articleId: String): BaseViewModel<ArticleView
     }
 
 
-    data class ArticleState(
-            val isAuth: Boolean = false,
-            val isLoadingContent: Boolean = true,
-            val isLoadingreviews: Boolean = true,
-            val isLike: Boolean = false,
-            val isBookmark: Boolean = false,
-            val isShowMenu: Boolean = false,
-            val isBigText: Boolean = false,
-            val isDarkMode: Boolean = false,
-            val isSearch: Boolean = false,
-            val searchQuery: String? = null,
-            val searchResults: List<Pair<Int,Int>> = emptyList(),
-            val searchPosition: Int = 0,
-            val shareLink: String? = null,
-            val title: String? = null,
-            val category: String? = null,
-            val categoryIcon: Any? = null,
-            val date: String? = null,
-            val author: Any? = null,
-            val poster: String? = null,
-            val content: List<Any> = emptyList(),
-            val reviews: List<Any> = emptyList()
-
-    )
-
 }
+
+data class ArticleState(
+    val isAuth: Boolean = false,
+    val isLoadingContent: Boolean = true,
+    val isLoadingreviews: Boolean = true,
+    val isLike: Boolean = false,
+    val isBookmark: Boolean = false,
+    val isShowMenu: Boolean = false,
+    val isBigText: Boolean = false,
+    val isDarkMode: Boolean = false,
+    val isSearch: Boolean = false,
+    val searchQuery: String? = null,
+    val searchResults: List<Pair<Int,Int>> = emptyList(),
+    val searchPosition: Int = 0,
+    val shareLink: String? = null,
+    val title: String? = null,
+    val category: String? = null,
+    val categoryIcon: Any? = null,
+    val date: String? = null,
+    val author: Any? = null,
+    val poster: String? = null,
+    val content: List<Any> = emptyList(),
+    val reviews: List<Any> = emptyList()
+
+)
