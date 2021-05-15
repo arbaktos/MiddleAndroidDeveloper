@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles.ui.delegates
+package ru.skillbranch.skillarticles.data.delegates
 
 import ru.skillbranch.skillarticles.data.PrefManager
 import ru.skillbranch.skillarticles.data.adapters.JsonAdapter

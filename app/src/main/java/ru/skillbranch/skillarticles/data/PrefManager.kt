@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.flow.distinctUntilChanged
 import ru.skillbranch.skillarticles.App
 import ru.skillbranch.skillarticles.data.adapters.UserJsonAdapter
-import ru.skillbranch.skillarticles.ui.delegates.PrefDelegate
-import ru.skillbranch.skillarticles.ui.delegates.PrefObjDelegate
+import ru.skillbranch.skillarticles.data.delegates.PrefDelegate
+import ru.skillbranch.skillarticles.data.delegates.PrefObjDelegate
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 

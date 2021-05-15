@@ -7,7 +7,7 @@ fun String?.indexesOf(
 ): List<Int> {
     return if (this != null && substr.isNotEmpty()) {
         substr.toRegex(ignoreCaseOpt(ignoreCase))
-            .findAll(trim())
+            .findAll(this)
             .map { it.range.first }
             .toList()
     } else emptyList()
