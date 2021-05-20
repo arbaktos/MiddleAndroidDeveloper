@@ -34,7 +34,7 @@ import ru.skillbranch.skillarticles.viewmodels.*
 class RootActivity : AppCompatActivity(), IArticleView {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var viewModelFactory: ViewModelProvider.Factory = ViewModelFactory(this, "0")
-    private val viewModel: ArticleViewModel by viewModels { ViewModelFactory(this, "0") }
+    private val viewModel: ArticleViewModel by viewModels { viewModelFactory }
 
     private val vb: ActivityRootBinding by viewBinding(ActivityRootBinding::inflate)
 
@@ -55,7 +55,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
         setContentView(vb.root)
         setupToolbar()
-        Log.d("RootActivity", "toolbar 1")
+        //Log.d("RootActivity", "toolbar 1")
         setupBottombar()
         setupSubmenu()
 
@@ -122,27 +122,29 @@ class RootActivity : AppCompatActivity(), IArticleView {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val logo = vb.toolbar.children.find { it is AppCompatImageView } as? ImageView
         logo ?: return
-        logo?.scaleType = ImageView.ScaleType.CENTER_CROP
+        logo.scaleType = ImageView.ScaleType.CENTER_CROP
 
-        (logo?.layoutParams as? Toolbar.LayoutParams)?.let {
+        (logo.layoutParams as? Toolbar.LayoutParams)?.let {
             it.width = dpToIntPx(40)
             it.height = dpToIntPx(40)
             it.marginEnd = dpToIntPx(16)
             logo.layoutParams = it
         }
     }
+    private fun Int.toHex(): String = String.format("#%06X", 0xFFFFFF and this)
     
     override fun renderUi(data: ArticleState) {
 
         delegate.localNightMode =
             if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        Log.d("bgcolor", bgColor.toHex())
 
         with(vb.tvTextContent) {
             textSize = if (data.isBigText) 18f else 14f
-            movementMethod = ScrollingMovementMethod()
             val content = if(data.isLoadingContent) "loading" else data.content.first()
             if (text.toString() == content) return@with
             setText(content, TextView.BufferType.SPANNABLE)
+            movementMethod = ScrollingMovementMethod()
         }
 
         with (vb.toolbar) {
@@ -250,6 +252,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
         val content = vb.tvTextContent.text as Spannable
 
         clearSearchResult()
+
         searchResult.forEach { (start, end) ->
             content.setSpan(
                 SearchSpan(bgColor, fgColor),

@@ -44,6 +44,7 @@ class ArticleViewModel(private val articleId: String, savedStateHandle: SavedSta
 
         subscribeOnDataSource(getArticlePersonalInfo()) { info, state ->
             info ?: return@subscribeOnDataSource null
+            Log.d("bookmark", "${state.isBookmark}")
             state.copy(
                 isBookmark = info.isBookmark,
                 isLike = info.isLike
@@ -79,16 +80,14 @@ class ArticleViewModel(private val articleId: String, savedStateHandle: SavedSta
     }
 
     override fun handleSearch(query: String?) {
-//        if (query.isNullOrEmpty()) {
-//            updateState { it.copy(searchResults = emptyList(), searchPosition = 0) }
-//            return
-//        }
-        query ?: return
+        if (query.isNullOrEmpty()) {
+            updateState { it.copy(searchResults = emptyList(), searchPosition = 0) }
+            return
+        }
+        //query ?: return
 
         val result = currentState.content.firstOrNull().indexesOf(query)
                 .map { it to it + query.length }
-        Log.d("SearchResults", "$result")
-
         updateState { it.copy(searchQuery = query, searchResults = result) }
     }
 

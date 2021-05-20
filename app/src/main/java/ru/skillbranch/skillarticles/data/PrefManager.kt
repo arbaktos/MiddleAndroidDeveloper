@@ -33,6 +33,7 @@ class PrefManager(context: Context = App.applicationContext()) {
     var testUser by PrefObjDelegate(UserJsonAdapter())
 
     val dataStore = context.dataStore
+
     private val errHandler = CoroutineExceptionHandler { _, th ->
         Log.e("PrefManager", "err ${th.message}")
         // handle error this

@@ -1,10 +1,12 @@
 package ru.skillbranch.skillarticles.data
 
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.*
 import ru.skillbranch.skillarticles.R
+import ru.skillbranch.skillarticles.viewmodels.ArticleState
 import java.util.*
 
 object LocalDataHolder {
@@ -39,7 +41,7 @@ object LocalDataHolder {
         GlobalScope.launch {
             if (isDelay) delay(500)
             withContext(Dispatchers.Main){
-                articleInfo.value = ArticlePersonalInfo(isBookmark = true)
+                articleInfo.value = ArticlePersonalInfo(true)
             }
         }
         return articleInfo
