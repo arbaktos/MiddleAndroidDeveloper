@@ -1,4 +1,4 @@
-package ru.skillbranch.skillarticles
+package ru.skillbranch.skillarticles.markdown
 
 import java.util.regex.Pattern
 
@@ -221,7 +221,7 @@ object MarkdownParser {
 
 }
 
-class MarkdownText(val elements: List<Element>)
+data class MarkdownText(val elements: List<Element>)
 
 sealed class Element {
 
