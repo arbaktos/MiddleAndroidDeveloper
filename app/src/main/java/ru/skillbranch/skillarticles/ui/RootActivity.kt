@@ -137,7 +137,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
         delegate.localNightMode =
             if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        Log.d("bgcolor", bgColor.toHex())
+        //Log.d("bgcolor", bgColor.toHex())
 
         with(vb.tvTextContent) {
             textSize = if (data.isBigText) 18f else 14f
