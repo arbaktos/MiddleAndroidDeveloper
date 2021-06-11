@@ -22,27 +22,28 @@ class PrefObjDelegate<T>(
 
         val key = stringPreferencesKey(customKey ?: prop.name)
         return object : ReadWriteProperty<PrefManager, T?> {
-            private var _storedValue: String? = null
+            private var _storedValue: T? = null
 
             override fun getValue(thisRef: PrefManager, property: KProperty<*>): T? {
                 if (_storedValue == null) {
                     //async flow
                     val flowValue = thisRef.dataStore.data.map { prefs ->
-                        prefs[key]
+                        adapter.fromJson(prefs[key] ?: "")
                     }
                     //sync read on IO Dispatchers and return result on call thread
                     //а что произойдет, если в adapter.fromJson() придет пустая строка,
                     // которая тут может быть получена в элвис-операторе?
-                    _storedValue = runBlocking(Dispatchers.IO) { flowValue.first() } ?: ""
+                    // Возможно стоит добавить обработку пустой строки в UserJsonAdapter отдельно.
+                    _storedValue = runBlocking(Dispatchers.IO) { flowValue.first() }
                 }
 
                 //также лучше стоит сделать _storedValue типа T?, чтобы каждый раз
                 // при получении значения не производить десериализацию
-                return adapter.fromJson(_storedValue!!)
+                return _storedValue!!
             }
 
             override fun setValue(thisRef: PrefManager, property: KProperty<*>, value: T?) {
-                _storedValue = adapter.toJson(value)
+                _storedValue = value// adapter.toJson(value)
                 //set non blocking on Coroutine
                 thisRef.scope.launch {
                     thisRef.dataStore.edit { prefs ->
