@@ -157,8 +157,6 @@ class ArticleViewModel(private val articleId: String, savedStateHandle: SavedSta
     fun handleIsSearch(isSearch: Boolean) {
         updateState { it.copy(isSearch = isSearch) }
     }
-
-
 }
 
 data class ArticleState(

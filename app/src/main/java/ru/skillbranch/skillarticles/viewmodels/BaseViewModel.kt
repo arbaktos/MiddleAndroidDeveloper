@@ -9,7 +9,8 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
 import java.io.Serializable
 
-abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: SavedStateHandle?) : ViewModel() where T: VMState {
+abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: SavedStateHandle?) :
+    ViewModel() where T : VMState {
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     val notifications = MutableLiveData<Event<Notify>>()
 
@@ -65,7 +66,11 @@ abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: Save
         state.observe(owner, Observer { onChanged(it!!) })
     }
 
-    fun <D> observeSubState(owner: LifecycleOwner, transform : (T) -> D, onChanged: (substate: D) -> Unit) {
+    fun <D> observeSubState(
+        owner: LifecycleOwner,
+        transform: (T) -> D,
+        onChanged: (substate: D) -> Unit
+    ) {
         state
             .map(transform)
             .distinctUntilChanged()
@@ -87,8 +92,8 @@ abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: Save
      * изменяет его и возвращает модифицированное состояние, которое устанавливается как текущее
      */
     protected fun <S> subscribeOnDataSource(
-            source: LiveData<S>,
-            onChanged: (newValue: S, currentState: T) -> T?
+        source: LiveData<S>,
+        onChanged: (newValue: S, currentState: T) -> T?
     ) {
         state.addSource(source) {
             state.value = onChanged(it, currentState) ?: return@addSource
@@ -99,10 +104,10 @@ abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: Save
         Log.e("BaseViewModel", "save state $currentState")
         savedStateHandle?.set("state", currentState)
     }
-
 }
 
-class ViewModelFactory(owner: SavedStateRegistryOwner, private val params: String) : AbstractSavedStateViewModelFactory(owner, bundleOf()) {
+class ViewModelFactory(owner: SavedStateRegistryOwner, private val params: String) :
+    AbstractSavedStateViewModelFactory(owner, bundleOf()) {
     override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
@@ -147,8 +152,9 @@ class EventObserver<E>(private val onEventUnhandledContent: (E) -> Unit) : Obser
     }
 }
 
-sealed class Notify() {
+sealed class Notify {
     abstract val message: String
+
     data class TextMessage(override val message: String) : Notify()
 
     data class ActionMessage(

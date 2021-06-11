@@ -10,6 +10,7 @@ import ru.skillbranch.skillarticles.ui.custom.Bottombar
 
 
 class SubmenuBehavior() : CoordinatorLayout.Behavior<ArticleSubmenu>() {
+
     constructor(context: Context, attrs: AttributeSet) : this()
 
     override fun layoutDependsOn(

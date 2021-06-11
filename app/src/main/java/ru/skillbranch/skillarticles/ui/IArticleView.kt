@@ -7,6 +7,7 @@ import ru.skillbranch.skillarticles.viewmodels.SubmenuData
 interface IArticleView {
     fun setupSubmenu()
     fun setupBottombar()
+    //Опечатка, но подозреваю, что если ее исправить, то тесты на сервере могут не пройти.
     fun renderBotombar(data: BottombarData)
     fun renderSubmenu(data: SubmenuData)
     fun renderUi(data: ArticleState)

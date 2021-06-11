@@ -1,6 +1,5 @@
 package ru.skillbranch.skillarticles.data.repositories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import ru.skillbranch.skillarticles.data.*
 
@@ -18,7 +17,6 @@ class ArticleRepository(
     private val prefs: PrefManager = PrefManager()
 ) : IArticleRepository{
 
-
     override fun loadArticleContent(articleId: String): LiveData<List<String>?> {
         return network.loadArticleContent(articleId) //5s delay from network
     }
@@ -31,6 +29,7 @@ class ArticleRepository(
     }
 
     override fun getAppSettings(): LiveData<AppSettings> = prefs.settings //from preferences
+
     override fun updateSettings(appSettings: AppSettings) {
         prefs.isBigText = appSettings.isBigText
         prefs.isDarkMode = appSettings.isDarkMode
