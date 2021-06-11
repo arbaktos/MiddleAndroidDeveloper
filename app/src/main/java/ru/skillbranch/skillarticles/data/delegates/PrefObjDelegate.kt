@@ -36,6 +36,8 @@ class PrefObjDelegate<T>(
                     _storedValue = runBlocking(Dispatchers.IO) { flowValue.first() } ?: ""
                 }
 
+                //также лучше стоит сделать _storedValue типа T?, чтобы каждый раз
+                // при получении значения не производить десериализацию
                 return adapter.fromJson(_storedValue!!)
             }
 
