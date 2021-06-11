@@ -9,10 +9,10 @@ import androidx.viewbinding.ViewBinding
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-class ViewBindingDelegate<T: ViewBinding> (
+class ViewBindingDelegate<T : ViewBinding>(
     private val activity: AppCompatActivity,
     private val initializer: (LayoutInflater) -> T
-        ): ReadOnlyProperty<AppCompatActivity, T>, LifecycleObserver {
+) : ReadOnlyProperty<AppCompatActivity, T>, LifecycleObserver {
     private var _value: T? = null
 
     init {
@@ -37,5 +37,5 @@ class ViewBindingDelegate<T: ViewBinding> (
     }
 }
 
-inline fun <reified T: ViewBinding> AppCompatActivity.viewBinding(noinline initializer: (LayoutInflater) -> T) =
+inline fun <reified T : ViewBinding> AppCompatActivity.viewBinding(noinline initializer: (LayoutInflater) -> T) =
     ViewBindingDelegate(this, initializer)

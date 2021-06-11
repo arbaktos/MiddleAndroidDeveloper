@@ -11,7 +11,10 @@ import ru.skillbranch.skillarticles.data.adapters.JsonAdapter
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class PrefObjDelegate<T>(private val adapter: JsonAdapter<T>, private val customKey: String? = null) {
+class PrefObjDelegate<T>(
+    private val adapter: JsonAdapter<T>,
+    private val customKey: String? = null
+) {
     operator fun provideDelegate(
         thisRef: PrefManager,
         prop: KProperty<*>
@@ -24,11 +27,12 @@ class PrefObjDelegate<T>(private val adapter: JsonAdapter<T>, private val custom
             override fun getValue(thisRef: PrefManager, property: KProperty<*>): T? {
                 if (_storedValue == null) {
                     //async flow
-                    val flowValue = thisRef.dataStore.data
-                        .map { prefs ->
-                            prefs[key]
-                        }
+                    val flowValue = thisRef.dataStore.data.map { prefs ->
+                        prefs[key]
+                    }
                     //sync read on IO Dispatchers and return result on call thread
+                    //а что произойдет, если в adapter.fromJson() придет пустая строка,
+                    // которая тут может быть получена в элвис-операторе?
                     _storedValue = runBlocking(Dispatchers.IO) { flowValue.first() } ?: ""
                 }
 

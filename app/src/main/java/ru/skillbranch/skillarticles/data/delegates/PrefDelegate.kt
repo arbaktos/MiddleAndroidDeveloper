@@ -10,15 +10,15 @@ import ru.skillbranch.skillarticles.data.PrefManager
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class PrefDelegate<T> (
+class PrefDelegate<T>(
     private val defaultValue: T,
     private val customKey: String? = null
-        ) {
+) {
 
     operator fun provideDelegate(
         thisRef: PrefManager,
         prop: KProperty<*>
-        ): ReadWriteProperty<PrefManager, T> {
+    ): ReadWriteProperty<PrefManager, T> {
 
         val key = createKey(customKey ?: prop.name, defaultValue)
         return object : ReadWriteProperty<PrefManager, T> {
@@ -27,12 +27,11 @@ class PrefDelegate<T> (
             override fun getValue(thisRef: PrefManager, property: KProperty<*>): T {
                 if (_storedValue == null) {
                     //async flow
-                    val flowValue = thisRef.dataStore.data
-                        .map { prefs ->
-                            prefs[key] ?: defaultValue
-                        }
+                    val flowValue = thisRef.dataStore.data.map { prefs ->
+                        prefs[key] ?: defaultValue
+                    }
                     //sync read on IO Dispatchers and return result on call thread
-                    _storedValue = runBlocking(Dispatchers.IO) { flowValue.first()}
+                    _storedValue = runBlocking(Dispatchers.IO) { flowValue.first() }
                 }
 
                 return _storedValue!!
@@ -55,10 +54,10 @@ class PrefDelegate<T> (
         when (value) {
             is Int -> intPreferencesKey(name)
             is Long -> longPreferencesKey(name)
-            is Double -> doublePreferencesKey(name)
             is Float -> floatPreferencesKey(name)
+            is Double -> doublePreferencesKey(name)
             is String -> stringPreferencesKey(name)
             is Boolean -> booleanPreferencesKey(name)
             else -> error("This type can not be stored into Preferences")
-        }.run { this as Preferences.Key<T>}
+        }.run { this as Preferences.Key<T> }
 }

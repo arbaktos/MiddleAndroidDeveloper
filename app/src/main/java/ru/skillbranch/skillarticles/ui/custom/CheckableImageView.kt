@@ -36,7 +36,6 @@ class CheckableImageView @JvmOverloads constructor(
         refreshDrawableState()
     }
 
-
     override fun toggle() {
         isChecked = !checked
     }

@@ -16,6 +16,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +39,8 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
     private val vb: ActivityRootBinding by viewBinding(ActivityRootBinding::inflate)
 
-    private val vbBotoombar
+    //Опечатка.
+    private val vbBottombar
         get() = vb.bottombar.binding
     private val vbSubmenu
         get() = vb.submenu.binding
@@ -55,18 +57,14 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
         setContentView(vb.root)
         setupToolbar()
-        //Log.d("RootActivity", "toolbar 1")
         setupBottombar()
         setupSubmenu()
 
         viewModel.observeState(this, ::renderUi)
         viewModel.observeSubState(this, ArticleState::toBottombarData, ::renderBotombar)
         viewModel.observeSubState(this, ArticleState::toSubmenuData, ::renderSubmenu)
-
-        viewModel.observeNotifications(this) {
-            renderNotification(it)
-        }
-
+        //Здесь также можно передать ссылку на метод.
+        viewModel.observeNotifications(this, ::renderNotification)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -76,6 +74,12 @@ class RootActivity : AppCompatActivity(), IArticleView {
         searchView.queryHint = getString(R.string.article_search_placeholder)
 
         //restore SearchView
+        //Не очень хорошо, когда из View-слоя идет доступ к состоянию вью-модели напрямую,
+        // но думаю в будущем в курсе это будет исправлено.
+        // Просто на заметку: в своих проектах так не делай :)
+        // Лучше сделать класс состояния вью, который будет отвечать за отрисовку состояния
+        // вью-модели и хранить в себе это отрисованное состояние. И брать данные оттуда.
+        // Таким образом можно добиться низкой связанности вью-слоя со слоем вью-модели.
         if (viewModel.currentState.isSearch) {
             menuItem.expandActionView()
             searchView.setQuery(viewModel.currentState.searchQuery, false)
@@ -92,6 +96,10 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 viewModel.handleSearchMode(false)
+                //Скорее всего, при схлопывании строки поиска значок поиска перестает отображаться?
+                // Нужно добавить эту строку для того,
+                // чтобы не отрисовывался значок меню вместо поиска
+                invalidateOptionsMenu()
                 return true
             }
 
@@ -139,6 +147,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
             if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         Log.d("bgcolor", bgColor.toHex())
 
+        //хардкод строки "loading" в большом количестве мест. Лучше вынести эту строку в ресурсы.
         with(vb.tvTextContent) {
             textSize = if (data.isBigText) 18f else 14f
             val content = if(data.isLoadingContent) "loading" else data.content.first()
@@ -150,8 +159,13 @@ class RootActivity : AppCompatActivity(), IArticleView {
         with (vb.toolbar) {
             title = data.title ?: "loading"
             subtitle = data.category ?: "loading"
-            if (data.categoryIcon != null) logo = getDrawable(data.categoryIcon as Int)
-
+            //в данном случае не критично, так как minApi=23, но лучше использовать
+            // ContextCompat.getDrawable, так как он учитывает уровень апи и в зависимости от него
+            // правильно получает иконку.
+            // Можно даже завести для этого extension-метод Context.getDrawableFrom,
+            // внутри которого и вызывать ContextCompat.getDrawable
+            if (data.categoryIcon != null)
+                logo = ContextCompat.getDrawable(this@RootActivity, data.categoryIcon as Int)
         }
 
         if (data.isLoadingContent) return
@@ -167,7 +181,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
             .setAnchorView(vb.bottombar)
 
         when(notify) {
-
             is Notify.ActionMessage -> {
                 val (_, label, handler) = notify
 
@@ -190,25 +203,31 @@ class RootActivity : AppCompatActivity(), IArticleView {
                     }
                 }
             }
-            else -> { /* nothing */}
+            //Лучше в when, когда идет проверка sealed классов, проверять все классы полностью,
+            // не добавляя ветку else. Так можно себя обезопасить на будущее, когда иерархия классов
+            // может измениться.
+            is Notify.TextMessage -> { /* nothing */ }
         }
         snackbar.show()
     }
 
     override fun setupBottombar() {
-        with (vbBotoombar) {
+        with (vbBottombar) {
             btnLike.setOnClickListener { viewModel.handleLike() }
             btnBookmark.setOnClickListener { viewModel.handleBookmark() }
             btnShare.setOnClickListener { viewModel.handleShare() }
             btnSettings.setOnClickListener { viewModel.handleToggleMenu() }
 
             btnResultUp.setOnClickListener {
-                searchView.clearFocus()
+                //Что будет, если сбросить фокус вьюхи, у которой нет фокуса?
+                // Может быть ничего страшного и не произойдет, но я бы на всякий случай добавил
+                // проверку на наличие фокуса, дабы избжать лишних действий во вью.
+                if(searchView.hasFocus()) searchView.clearFocus()
                 viewModel.handleUpResult()
             }
 
             btnResultDown.setOnClickListener {
-                searchView.clearFocus()
+                if(searchView.hasFocus()) searchView.clearFocus()
                 viewModel.handleDownResult()
             }
 
@@ -221,7 +240,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun renderBotombar(data: BottombarData) {
-        with(vbBotoombar) {
+        with(vbBottombar) {
             btnSettings.isChecked = data.isShowMenu
             btnLike.isChecked = data.isLike
             btnBookmark.isChecked = data.isBookmark
@@ -261,6 +280,9 @@ class RootActivity : AppCompatActivity(), IArticleView {
                 SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
+
+        //возможно при поиске стоит скроллить до первого вхождения?
+        renderSearchPosition(0)
     }
 
     override fun renderSearchPosition(searchPosition: Int) {
@@ -269,11 +291,10 @@ class RootActivity : AppCompatActivity(), IArticleView {
         val spans = content.getSpans<SearchSpan>()
 
         //remove old search span
-        content.getSpans<SearchFocusSpan>()
-            .forEach { content.removeSpan(it)}
+        content.getSpans<SearchFocusSpan>().forEach { content.removeSpan(it) }
 
         if (spans.isNotEmpty()) {
-            // find postition span
+            // find position span
             val result = spans[searchPosition]
             // move to selection
             Selection.setSelection(content, content.getSpanStart(result))
@@ -289,8 +310,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
     override fun clearSearchResult() {
         val content = vb.tvTextContent.text as Spannable
-        content.getSpans<SearchSpan>()
-            .forEach{ content.removeSpan(it) }
+        content.getSpans<SearchSpan>().forEach{ content.removeSpan(it) }
     }
 
     override fun showSearchBar(resultsCount: Int, searchPosition: Int) {
@@ -302,9 +322,8 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun hideSearchBar() {
-        with(vb.bottombar) {
-            setSearchState(false)
-        }
+        //Для одного вызова метода необязательно использовать блок with.
+        vb.bottombar.setSearchState(false)
         vb.scroll.setMarginOptionally(bottom = dpToIntPx(0))
     }
 
