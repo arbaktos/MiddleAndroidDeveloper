@@ -9,11 +9,11 @@ android {
 
     defaultConfig {
         applicationId "ru.skillbranch.skillarticles"
-        minSdkVersion 23
+        minSdkVersion 25
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        testInstrumentationRunner "ru.skillbranch.skillarticles.DexopenerJUnitRunner"
     }
 
     buildTypes {
@@ -58,5 +58,6 @@ dependencies {
     androidTestImplementation 'android.arch.core:core-testing:1.1.1'
     androidTestImplementation 'io.mockk:mockk-android:1.11.0'
     androidTestImplementation 'com.github.tmurakami:dexopener:2.0.5'
+
 
 }

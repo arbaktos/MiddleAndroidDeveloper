@@ -25,7 +25,7 @@ class ArticleSubmenu @JvmOverloads constructor(
         defStyleAttr: Int = 0
 ): ConstraintLayout(context, attrs, defStyleAttr), CoordinatorLayout.AttachedBehavior {
     val binding: LayoutSubmenuBinding =
-        LayoutSubmenuBinding.inflate(LayoutInflater.from(context), this, true)
+        LayoutSubmenuBinding.inflate(LayoutInflater.from(context), this)
 
     var isOpen = false
     private var centerX: Float = context.dpToPx(200)

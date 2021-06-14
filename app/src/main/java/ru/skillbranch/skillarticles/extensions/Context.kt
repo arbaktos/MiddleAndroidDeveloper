@@ -1,10 +1,18 @@
 package ru.skillbranch.skillarticles.extensions
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import kotlin.reflect.KProperty
 import android.util.TypedValue
+import androidx.annotation.AttrRes
+import ru.skillbranch.skillarticles.R
+import ru.skillbranch.skillarticles.ui.delegates.AttrValue
+import kotlin.properties.PropertyDelegateProvider
+import kotlin.properties.ReadOnlyProperty
+
 
 fun Context.dpToPx(dp: Int): Float {
     return TypedValue.applyDimension(
@@ -21,6 +29,15 @@ fun Context.dpToIntPx(dp: Int): Int {
             this.resources.displayMetrics
     ).toInt()
 }
+
+fun Context.attrValue(@AttrRes attr: Int): Int  {
+    val _value: Int
+    val tv = TypedValue()
+    if(this.theme.resolveAttribute(attr, tv, true)) _value = tv.data
+    else throw Resources.NotFoundException("Resource with id $attr not found_extension")
+    return _value
+}
+
 
 val Context.isNetworkAvailable: Boolean
     get() {

@@ -37,18 +37,19 @@ object MarkdownParser {
 
     //clear markdown text to string without markdown characters
     fun clear(string: String?): String? {
-        if (string == null) return null
-        var elements = listOf<Element>()
-        var elementString = string!!
-
-        while(true) {
-            if (elements.size == findElements(elementString).size) {
-                return elementString
-            } else {
-                elements = findElements(elementString)
-                elementString = elements.joinToString("") { it.text.toString() }
-            }
-        }
+        string ?: return null
+        return parse(string).elements.spread().joinToString("") { it.clearContent()}
+//        var elements = listOf<Element>()
+//        var elementString = string!!
+//
+//        while(true) {
+//            if (elements.size == findElements(elementString).size) {
+//                return elementString
+//            } else {
+//                elements = findElements(elementString)
+//                elementString = elements.joinToString("") { it.text.toString() }
+//            }
+//        }
     }
 
     //find markdown elements in markdown text
@@ -301,5 +302,37 @@ sealed class Element {
         override val elements: List<Element> = emptyList()
     ) : Element()
 
+    fun spread(): List<Element> {
+        val elements = mutableListOf<Element>()
+        elements.add(this)
+        elements.addAll(this.elements.spread())
+        return elements
+    }
 
+}
+
+private fun List<Element>.spread(): List<Element> {
+    val elements = mutableListOf<Element>()
+    if(this.isNotEmpty()) elements.addAll(
+        this.fold(mutableListOf()) {acc, el -> acc.also { it.addAll(el.spread()) }}
+    )
+    return elements
+}
+
+private fun Element.clearContent(): String {
+    return StringBuilder().apply {
+        elements.forEach {
+            if (it.elements.isEmpty()) append(it.text)
+            else it.elements.forEach { el -> append(el.clearContent()) }
+        }
+    }.toString()
+}
+
+private fun MarkdownText.clearContent(): String {
+    return StringBuilder().apply {
+        elements.forEach {
+            if (it.elements.isEmpty()) append(it.text)
+            else it.elements.forEach { el -> append(el.clearContent()) }
+        }
+    }.toString()
 }

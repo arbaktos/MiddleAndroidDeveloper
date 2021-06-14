@@ -1,11 +1,10 @@
 package ru.skillbranch.skillarticles.data.repositories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import ru.skillbranch.skillarticles.data.*
 
 interface IArticleRepository {
-    fun loadArticleContent(articleId: String): LiveData<List<String>?>
+    fun loadArticleContent(articleId: String): LiveData<String>
     fun getArticle(articleId: String): LiveData<ArticleData?>
     fun loadArticlePersonalInfo(articleId: String): LiveData<ArticlePersonalInfo?>
     fun getAppSettings(): LiveData<AppSettings>
@@ -19,7 +18,7 @@ class ArticleRepository(
 ) : IArticleRepository{
 
 
-    override fun loadArticleContent(articleId: String): LiveData<List<String>?> {
+    override fun loadArticleContent(articleId: String): LiveData<String> {
         return network.loadArticleContent(articleId) //5s delay from network
     }
     override fun getArticle(articleId: String): LiveData<ArticleData?> {
