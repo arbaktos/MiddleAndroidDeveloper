@@ -14,7 +14,8 @@ import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.indexesOf
 import ru.skillbranch.skillarticles.markdown.MarkdownParser
 
-class ArticleViewModel(private val articleId: String, savedStateHandle: SavedStateHandle? = null):
+class ArticleViewModel(private val articleId: String,
+                       savedStateHandle: SavedStateHandle?):
     BaseViewModel<ArticleState>(ArticleState(), savedStateHandle), IArticleViewModel {
     private val repository = ArticleRepository()
     private var clearContent: String? = null
