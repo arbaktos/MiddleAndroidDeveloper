@@ -33,6 +33,10 @@ class UnderlineSpan(
             path.lineTo(x + textWidth, bottom.toFloat())
             canvas.drawPath(path, paint)
         }
+
+        canvas.drawText(
+            text, 0, text.length, x, y.toFloat(), paint
+        )
     }
 
 
@@ -63,4 +67,5 @@ class UnderlineSpan(
         style = oldStyle
         strokeWidth = oldWidth
     }
+    
 }
