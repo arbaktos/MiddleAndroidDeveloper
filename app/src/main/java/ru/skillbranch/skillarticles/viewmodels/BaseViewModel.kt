@@ -96,7 +96,7 @@ abstract class BaseViewModel<T>(initState: T, private val savedStateHandle: Save
     }
 
     fun saveState() {
-        Log.e("BaseViewModel", "save state $currentState")
+        //Log.e("BaseViewModel", "save state $currentState")
         savedStateHandle?.set("state", currentState)
     }
 

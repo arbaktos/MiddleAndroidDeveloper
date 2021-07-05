@@ -62,7 +62,7 @@ class ArticleViewModel(private val articleId: String,
         }
     }
 
-    override fun getArticleContent(): LiveData<String> { // nullable in source files
+    override fun getArticleContent(): LiveData<String?> { // nullable in source files
         return repository.loadArticleContent(articleId)
     }
 

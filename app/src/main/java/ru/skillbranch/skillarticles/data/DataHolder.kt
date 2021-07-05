@@ -45,14 +45,14 @@ object LocalDataHolder {
     }
 
     fun updateArticlePersonalInfo(info: ArticlePersonalInfo) {
-        Log.e("DataHolder", "update personal info: $info");
+        //Log.e("DataHolder", "update personal info: $info");
         articleInfo.value = info
     }
 }
 
 object NetworkDataHolder {
-    val content = MutableLiveData<String>("")
-    fun loadArticleContent(articleId: String): LiveData<String> {
+    val content = MutableLiveData<String>()
+    fun loadArticleContent(articleId: String): LiveData<String?> {
         GlobalScope.launch {
             delay(500)
             content.postValue(longText)
