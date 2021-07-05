@@ -52,10 +52,10 @@ class UnderlineSpan(
         val oldStyle = style
         val oldWidth = strokeWidth
 
-        strokeWidth = 0f
-        style = Paint.Style.STROKE
         pathEffect = dashs
         color = underlineColor
+        style = Paint.Style.STROKE
+        strokeWidth = 0f
 
         block()
 
