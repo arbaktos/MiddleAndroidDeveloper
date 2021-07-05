@@ -66,7 +66,7 @@ class ArticleViewModel(private val articleId: String,
         return repository.loadArticleContent(articleId)
     }
 
-    override fun getArticleData(): LiveData<ArticleData> {
+    override fun getArticleData(): LiveData<ArticleData?> {
         return repository.getArticle(articleId)
     }
 

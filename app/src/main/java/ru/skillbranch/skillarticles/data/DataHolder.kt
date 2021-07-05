@@ -14,7 +14,7 @@ object LocalDataHolder {
     private val articleInfo = MutableLiveData<ArticlePersonalInfo?>(null)
     private val settings = MutableLiveData(AppSettings())
 
-    fun findArticle(articleId: String): LiveData<ArticleData> {
+    fun findArticle(articleId: String): LiveData<ArticleData?> {
         GlobalScope.launch {
             delay(1000)
             articleData.postValue(

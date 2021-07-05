@@ -14,7 +14,7 @@ interface IArticleViewModel {
     /**
      * Получение краткой информации о статье из базы данных
      */
-    fun getArticleData(): LiveData<ArticleData>
+    fun getArticleData(): LiveData<ArticleData?>
 
     /**
      * Получение пользовательской информации о статье из базы данных
