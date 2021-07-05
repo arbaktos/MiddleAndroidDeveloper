@@ -55,6 +55,7 @@ class UnderlineSpan(
     private inline fun Paint.forLine(block: () -> Unit) {
         val oldStyle = style
         val oldWidth = strokeWidth
+        val oldColor = color
 
         pathEffect = dashs
         color = underlineColor
@@ -66,6 +67,7 @@ class UnderlineSpan(
         pathEffect = null
         style = oldStyle
         strokeWidth = oldWidth
+        color = oldColor
     }
-    
+
 }
