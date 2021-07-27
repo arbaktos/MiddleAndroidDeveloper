@@ -46,3 +46,13 @@ fun User.asMap(): Map<String, Any?> = mapOf(
     "about"  to about
 )
 
+fun List<Pair<Int, Int>>.groupByBounds(bounds: List<Pair<Int, Int>>): //bounds of elements this = searchResult
+        MutableList<List<Pair<Int, Int>>> {
+    val result = mutableListOf<List<Pair<Int, Int>>>()
+    bounds.forEach { elBounds ->
+        val range: IntRange = elBounds.first..elBounds.second
+        result.add(this.filter { it.first in range && it.second in range})
+    }
+    return result
+}
+

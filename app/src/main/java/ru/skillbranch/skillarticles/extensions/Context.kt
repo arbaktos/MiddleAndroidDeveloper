@@ -1,5 +1,6 @@
 package ru.skillbranch.skillarticles.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.net.ConnectivityManager
@@ -7,6 +8,8 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import kotlin.reflect.KProperty
 import android.util.TypedValue
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.AttrRes
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.ui.delegates.AttrValue
@@ -36,6 +39,11 @@ fun Context.attrValue(@AttrRes attr: Int): Int  {
     if(this.theme.resolveAttribute(attr, tv, true)) _value = tv.data
     else throw Resources.NotFoundException("Resource with id $attr not found_extension")
     return _value
+}
+
+fun Context.hideKeyboard(view: View) {
+    val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
 

@@ -1,34 +1,27 @@
 package ru.skillbranch.skillarticles.ui
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Selection
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.text.getSpans
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.databinding.ActivityRootBinding
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
+import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
-import ru.skillbranch.skillarticles.markdown.MarkdownBuilder
-import ru.skillbranch.skillarticles.ui.custom.SearchFocusSpan
-import ru.skillbranch.skillarticles.ui.custom.SearchSpan
-import ru.skillbranch.skillarticles.ui.delegates.AttrValue
 import ru.skillbranch.skillarticles.ui.delegates.viewBinding
 import ru.skillbranch.skillarticles.viewmodels.*
 
@@ -37,7 +30,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     var viewModelFactory: ViewModelProvider.Factory = ViewModelFactory(this, "0")
     private val viewModel: ArticleViewModel by viewModels { viewModelFactory }
-
     private val vb: ActivityRootBinding by viewBinding(ActivityRootBinding::inflate)
 
     private val vbBotoombar
@@ -46,20 +38,13 @@ class RootActivity : AppCompatActivity(), IArticleView {
         get() = vb.submenu.binding
     private lateinit var searchView: SearchView
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val bgColor by AttrValue(R.attr.colorSecondary)
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val fgColor by AttrValue(R.attr.colorOnSecondary)
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(vb.root)
         setupToolbar()
-        //Log.d("RootActivity", "toolbar 1")
         setupBottombar()
         setupSubmenu()
+        setupCopyListener()
 
         viewModel.observeState(this, ::renderUi)
         viewModel.observeSubState(this, ArticleState::toBottombarData, ::renderBotombar)
@@ -68,7 +53,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
         viewModel.observeNotifications(this) {
             renderNotification(it)
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -119,53 +103,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
         super.onSaveInstanceState(outState)
     }
 
-    override fun setupToolbar() {
-        setSupportActionBar(vb.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val logo = vb.toolbar.children.find { it is AppCompatImageView } as? ImageView
-        logo ?: return
-        logo.scaleType = ImageView.ScaleType.CENTER_CROP
-
-        (logo.layoutParams as? Toolbar.LayoutParams)?.let {
-            it.width = dpToIntPx(40)
-            it.height = dpToIntPx(40)
-            it.marginEnd = dpToIntPx(16)
-            logo.layoutParams = it
-        }
-    }
-    private fun Int.toHex(): String = String.format("#%06X", 0xFFFFFF and this)
-    
-    override fun renderUi(data: ArticleState) {
-
-        delegate.localNightMode =
-            if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-
-        with(vb.tvTextContent) {
-            textSize = if (data.isBigText) 18f else 14f
-//            val content = if(data.isLoadingContent) "loading" else data.content
-//            if (text.toString() == content) return@with
-//            setText(content, TextView.BufferType.SPANNABLE)
-            movementMethod = LinkMovementMethod()
-            MarkdownBuilder(context)
-                .markdownToSpan(data.content)
-                .run { setText(this, TextView.BufferType.SPANNABLE)}
-        }
-
-        with (vb.toolbar) {
-            title = data.title ?: "loading"
-            subtitle = data.category ?: "loading"
-            if (data.categoryIcon != null) logo = getDrawable(data.categoryIcon as Int)
-
-        }
-
-        if (data.isLoadingContent) return
-
-        if (data.isSearch) {
-            renderSearchResult(data.searchResults)
-            renderSearchPosition(data.searchPosition)
-        } else clearSearchResult()
-    }
-
     private fun renderNotification(notify: Notify) {
         val snackbar = Snackbar.make(vb.coordinatorContainer, notify.message, Snackbar.LENGTH_LONG)
             .setAnchorView(vb.bottombar)
@@ -199,6 +136,14 @@ class RootActivity : AppCompatActivity(), IArticleView {
         snackbar.show()
     }
 
+    override fun setupSubmenu() {
+        with(vbSubmenu) {
+            btnTextUp.setOnClickListener { viewModel.handleUpText() }
+            btnTextDown.setOnClickListener { viewModel.handleDownText() }
+            switchMode.setOnClickListener { viewModel.handleNightMode() }
+        }
+    }
+
     override fun setupBottombar() {
         with (vbBotoombar) {
             btnLike.setOnClickListener { viewModel.handleLike() }
@@ -207,12 +152,14 @@ class RootActivity : AppCompatActivity(), IArticleView {
             btnSettings.setOnClickListener { viewModel.handleToggleMenu() }
 
             btnResultUp.setOnClickListener {
-                searchView.clearFocus()
+                if (!vb.tvTextContent.hasFocus()) vb.tvTextContent.hasFocus()
+                hideKeyboard(it)
                 viewModel.handleUpResult()
             }
 
             btnResultDown.setOnClickListener {
-                searchView.clearFocus()
+                if (!vb.tvTextContent.hasFocus()) vb.tvTextContent.hasFocus()
+                hideKeyboard(it)
                 viewModel.handleDownResult()
             }
 
@@ -231,8 +178,20 @@ class RootActivity : AppCompatActivity(), IArticleView {
             btnBookmark.isChecked = data.isBookmark
         }
 
-        if (data.isSearch) showSearchBar(data.resultsCount, data.searchPosition)
-        else hideSearchBar()
+        if (data.isSearch) {
+            showSearchBar(data.resultsCount, data.searchPosition)
+            with(vb.toolbar) {
+                (layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_NO_SCROLL
+            }
+        } else {
+            hideSearchBar()
+            with(vb.toolbar) {
+                (layoutParams as AppBarLayout.LayoutParams).scrollFlags =
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
+                            AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED
+            }
+        }
     }
 
     override fun renderSubmenu(data: SubmenuData) {
@@ -244,57 +203,59 @@ class RootActivity : AppCompatActivity(), IArticleView {
         if (data.isShowMenu) vb.submenu.open() else vb.submenu.close()
     }
 
-    override fun setupSubmenu() {
-        with(vbSubmenu) {
-            btnTextUp.setOnClickListener { viewModel.handleUpText() }
-            btnTextDown.setOnClickListener { viewModel.handleDownText() }
-            switchMode.setOnClickListener { viewModel.handleNightMode() }
+    override fun renderUi(data: ArticleState) {
+
+        delegate.localNightMode =
+            if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+
+        with(vb.tvTextContent) {
+            textSize = if (data.isBigText) 18f else 14f
+            isLoading = data.content.isEmpty()
+            setContent(data.content)
         }
+
+        with (vb.toolbar) {
+            title = data.title ?: "loading"
+            subtitle = data.category ?: "loading"
+            if (data.categoryIcon != null) logo = getDrawable(data.categoryIcon as Int)
+
+        }
+
+        if (data.isLoadingContent) return
+
+        if (data.isSearch) {
+            renderSearchResult(data.searchResults)
+            renderSearchPosition(data.searchPosition, data.searchResults)
+        } else clearSearchResult()
     }
 
+    override fun setupToolbar() {
+        setSupportActionBar(vb.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        val logo = vb.toolbar.children.find { it is AppCompatImageView } as? ImageView
+        logo ?: return
+        logo.scaleType = ImageView.ScaleType.CENTER_CROP
+
+        (logo.layoutParams as? Toolbar.LayoutParams)?.let {
+            it.width = dpToIntPx(40)
+            it.height = dpToIntPx(40)
+            it.marginEnd = dpToIntPx(16)
+            logo.layoutParams = it
+        }
+    }
     override fun renderSearchResult(searchResult: List<Pair<Int, Int>>) {
-        val content = vb.tvTextContent.text as Spannable
-
-        clearSearchResult()
-
-        searchResult.forEach { (start, end) ->
-            content.setSpan(
-                SearchSpan(bgColor, fgColor),
-                start,
-                end,
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
+        vb.tvTextContent.renderSearchResult(searchResult)
     }
 
-    override fun renderSearchPosition(searchPosition: Int) {
-        val content = vb.tvTextContent.text as Spannable
+    private fun Int.toHex(): String = String.format("#%06X", 0xFFFFFF and this)
 
-        val spans = content.getSpans<SearchSpan>()
 
-        //remove old search span
-        content.getSpans<SearchFocusSpan>()
-            .forEach { content.removeSpan(it)}
-
-        if (spans.isNotEmpty()) {
-            // find postition span
-            val result = spans[searchPosition]
-            // move to selection
-            Selection.setSelection(content, content.getSpanStart(result))
-            // set new search focus span
-            content.setSpan(
-                SearchFocusSpan(bgColor, fgColor),
-                content.getSpanStart(result),
-                content.getSpanEnd(result),
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
+    override fun renderSearchPosition(searchPosition: Int, searchResult: List<Pair<Int, Int>>) {
+        vb.tvTextContent.renderSearchPosition(searchResult.getOrNull(searchPosition))
     }
 
     override fun clearSearchResult() {
-        val content = vb.tvTextContent.text as Spannable
-        content.getSpans<SearchSpan>()
-            .forEach{ content.removeSpan(it) }
+        vb.tvTextContent.clearSearchResult()
     }
 
     override fun showSearchBar(resultsCount: Int, searchPosition: Int) {
@@ -310,6 +271,15 @@ class RootActivity : AppCompatActivity(), IArticleView {
             setSearchState(false)
         }
         vb.scroll.setMarginOptionally(bottom = dpToIntPx(0))
+    }
+
+    override fun setupCopyListener() {
+        vb.tvTextContent.setCopyListener { copy ->
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Copied code", copy)
+            clipboard.setPrimaryClip(clip)
+            viewModel.handleCopyCode()
+        }
     }
 
 }
