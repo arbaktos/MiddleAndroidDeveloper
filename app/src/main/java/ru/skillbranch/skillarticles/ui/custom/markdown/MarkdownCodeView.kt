@@ -82,6 +82,7 @@ class MarkdownCodeView private constructor(
         }
 
     init {
+        isSaveEnabled = true
         tvCodeView = MarkdownTextView(context, fontSize * 0.85f, false).apply {
             typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
             setTextColor(textColor)
