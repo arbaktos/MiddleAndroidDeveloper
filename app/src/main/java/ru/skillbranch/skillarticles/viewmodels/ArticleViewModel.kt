@@ -12,10 +12,10 @@ import ru.skillbranch.skillarticles.data.repositories.ArticleRepository
 import ru.skillbranch.skillarticles.extensions.asMap
 import ru.skillbranch.skillarticles.extensions.format
 import ru.skillbranch.skillarticles.extensions.indexesOf
-import ru.skillbranch.skillarticles.ui.custom.markdown.Element
-import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownElement
-import ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownParser
-import ru.skillbranch.skillarticles.ui.custom.markdown.clearContent
+import ru.skillbranch.skillarticles.data.repositories.Element
+import ru.skillbranch.skillarticles.data.repositories.MarkdownElement
+import ru.skillbranch.skillarticles.data.repositories.MarkdownParser
+import ru.skillbranch.skillarticles.data.repositories.clearContent
 
 class ArticleViewModel(private val articleId: String, savedStateHandle: SavedStateHandle?):
     BaseViewModel<ArticleState>(ArticleState(), savedStateHandle), IArticleViewModel {
