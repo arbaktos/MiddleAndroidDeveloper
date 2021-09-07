@@ -3,6 +3,8 @@ package ru.skillbranch.skillarticles.ui.custom.markdown
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Spannable
 import android.view.*
 import android.widget.ImageView
@@ -22,6 +24,7 @@ import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.dpToPx
 import ru.skillbranch.skillarticles.extensions.setPaddingOptionally
+import ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import kotlin.math.hypot
@@ -74,6 +77,7 @@ class MarkdownImageView private constructor(
     }
 
     init {
+        isSaveEnabled = true
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         ivImage = ImageView(context).apply {
             outlineProvider = object : ViewOutlineProvider() {
@@ -233,6 +237,40 @@ class MarkdownImageView private constructor(
         va.doOnEnd { tvAlt?.isVisible = false }
         va.start()
     }
+
+    //save state
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState = SavedStateImageView(super.onSaveInstanceState())
+        savedState.isAlt = tvAlt?.isVisible ?: false
+        return savedState
+    }
+
+    //restore state
+    override fun onRestoreInstanceState(state: Parcelable) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedStateImageView) {
+            tvAlt?.apply {
+                isVisible = state.isAlt
+            }
+        }
+    }
+    private class SavedStateImageView: BaseSavedState, Parcelable {
+        var isAlt = false
+        constructor(superState: Parcelable?) : super(superState)
+
+        constructor(src: Parcel) : super(src) {
+            isAlt = src.readInt() == 1
+        }
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeInt(if (isAlt) 1 else 0)
+        }
+        companion object CREATOR : Parcelable.Creator<SavedStateImageView> {
+            override fun createFromParcel(parcel: Parcel) = SavedStateImageView(parcel)
+            override fun newArray(size: Int): Array<SavedStateImageView?> = arrayOfNulls(size)
+        }
+    }
 }
 
 class AspectRatioResizeTransform : BitmapTransformation() {
@@ -267,3 +305,4 @@ class AspectRatioResizeTransform : BitmapTransformation() {
 
     override fun hashCode(): Int = ID.hashCode()
 }
+

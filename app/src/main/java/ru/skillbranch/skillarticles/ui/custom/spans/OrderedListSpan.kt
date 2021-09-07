@@ -36,8 +36,6 @@ class OrderedListSpan(
                 lineBaseline.toFloat(),
                 paint
             )
-
-
             paint.color = oldColor
         }
     }
