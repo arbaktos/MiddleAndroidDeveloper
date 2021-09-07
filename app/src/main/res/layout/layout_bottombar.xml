@@ -75,16 +75,15 @@
             android:src="@drawable/ic_close_black_24dp"
             tools:tint = "@android:color/white"/>
 
-        <TextView
-            android:id="@+id/tv_search_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Not found"
-            android:layout_marginLeft="16dp"
-            android:layout_gravity="center_vertical"
-            android:textColor="?attr/colorPrimary"
-            tools:textColor="@android:color/white"
-            />
+                <TextView
+                    android:id="@+id/tv_search_result"
+                    android:layout_width="228dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:text="Not found"
+                    android:textColor="?attr/colorPrimary"
+                    tools:textColor="@android:color/white" />
 
         <View
             android:layout_width="0dp"

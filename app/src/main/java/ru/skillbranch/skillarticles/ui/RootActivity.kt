@@ -4,6 +4,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -19,9 +20,11 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.databinding.ActivityRootBinding
+import ru.skillbranch.skillarticles.databinding.LayoutBottombarBinding.inflate
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
+import ru.skillbranch.skillarticles.ui.custom.Bottombar
 import ru.skillbranch.skillarticles.ui.delegates.viewBinding
 import ru.skillbranch.skillarticles.viewmodels.*
 
@@ -33,14 +36,15 @@ class RootActivity : AppCompatActivity(), IArticleView {
     private val vb: ActivityRootBinding by viewBinding(ActivityRootBinding::inflate)
 
     private val vbBotoombar
-        get() = vb.bottombar.binding
+        get() = vb.bottombar
     private val vbSubmenu
-        get() = vb.submenu.binding
+        get() = vb.submenu
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+       // addContentView(Bottombar(this), Bottombar(this).layoutParams)
         setupToolbar()
         setupBottombar()
         setupSubmenu()
@@ -80,8 +84,8 @@ class RootActivity : AppCompatActivity(), IArticleView {
                 viewModel.handleSearchMode(false)
                 return true
             }
-
         })
+
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.handleSearch(query)
@@ -122,7 +126,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
                 val (_, label, handler) = notify
 
                 with(snackbar) {
-                    setBackgroundTint(getColor(R.color.design_default_color_error))
+                    //setBackgroundTint(getColor(R.color.design_default_color_error))
                     setTextColor(getColor(android.R.color.white))
                     setActionTextColor(getColor(android.R.color.white))
                     handler ?: return@with
@@ -230,6 +234,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun setupToolbar() {
+
         setSupportActionBar(vb.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val logo = vb.toolbar.children.find { it is AppCompatImageView } as? ImageView

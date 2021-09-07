@@ -23,16 +23,16 @@ class ViewBindingDelegate<T: ViewBinding> (
     fun onCreate() {
         if (_value == null) {
             _value = initializer(activity.layoutInflater)
-            activity.setContentView(_value!!.root)
-            activity.lifecycle.removeObserver(this)
         }
+
+        activity.setContentView(_value!!.root)
+        activity.lifecycle.removeObserver(this)
     }
 
     override fun getValue(thisRef: AppCompatActivity, property: KProperty<*>): T {
         if (_value == null) {
             _value = initializer(thisRef.layoutInflater)
         }
-
         return _value!!
     }
 }

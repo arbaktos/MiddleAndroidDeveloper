@@ -5,27 +5,26 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.marginRight
-import ru.skillbranch.skillarticles.ui.custom.ArticleSubmenuOld
-import ru.skillbranch.skillarticles.ui.custom.BottombarOld
+import ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
+import ru.skillbranch.skillarticles.ui.custom.Bottombar
 
 
-class SubmenuBehavior() : CoordinatorLayout.Behavior<ArticleSubmenuOld>() {
-    constructor(context: Context, attrs: AttributeSet) : this()
+class SubmenuBehavior() : CoordinatorLayout.Behavior<ArticleSubmenu>() {
+    //constructor(context: Context, attrs: AttributeSet) : this()
 
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
-        child: ArticleSubmenuOld,
+        child: ArticleSubmenu,
         dependency: View
     ): Boolean {
-        return dependency is BottombarOld
+        return dependency is Bottombar
     }
 
     override fun onDependentViewChanged(
         parent: CoordinatorLayout,
-        child: ArticleSubmenuOld,
+        child: ArticleSubmenu,
         dependency: View
     ): Boolean {
-
         return if (child.isOpen && dependency.translationY >= 0f) {
             animate(child, dependency)
             true

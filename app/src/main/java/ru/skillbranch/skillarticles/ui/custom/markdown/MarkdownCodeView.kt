@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.Selection
 import android.text.Spannable
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView

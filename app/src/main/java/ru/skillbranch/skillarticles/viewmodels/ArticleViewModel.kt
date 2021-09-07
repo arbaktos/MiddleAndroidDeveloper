@@ -65,13 +65,12 @@ class ArticleViewModel(private val articleId: String, savedStateHandle: SavedSta
             )
         }
     }
+    override fun getArticleData(): LiveData<ArticleData?> {
+        return repository.getArticle(articleId)
+    }
 
     override fun getArticleContent(): LiveData<List<MarkdownElement>?> {
         return repository.loadArticleContent(articleId)
-    }
-
-    override fun getArticleData(): LiveData<ArticleData?> {
-        return repository.getArticle(articleId)
     }
 
     override fun getArticlePersonalInfo(): LiveData<ArticlePersonalInfo?> {
@@ -93,8 +92,8 @@ class ArticleViewModel(private val articleId: String, savedStateHandle: SavedSta
         }
         //query ?: return
 
-        if (clearContent == null && currentState.content.isNotEmpty()) clearContent =
-            currentState.content.clearContent()
+        if (clearContent == null && currentState.content.isNotEmpty())
+            clearContent = currentState.content.clearContent()
 
         val result = clearContent.indexesOf(query)
                 .map { it to it + query.length }
