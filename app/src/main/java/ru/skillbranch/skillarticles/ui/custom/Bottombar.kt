@@ -122,59 +122,36 @@ class Bottombar @JvmOverloads constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
         val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
         val height = iconSize
+        Log.d("Bottombar", "parentWidth = $parentWidth")
+        Log.d("Bottombar", "Width = $width")
         setMeasuredDimension(parentWidth, height)
     }
 
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
-
+        Log.d("Bottombar", "l = $l, t = $t, r = $r, b = $b")
         var usedWidth = 0
         val top = 0
         val bottom = iconSize
 
         if (isSearchMode) {
-            searchBar.layout(
-                0,
-                0,
-                r,
-                iconSize
-            )
+            searchBar.layout(0, 0, r, iconSize)
         } else {
-            btnLike.layout(
-                0,
-                top,
-                iconSize,
-                bottom
-            )
+            btnLike.layout(0, top, iconSize, bottom)
             usedWidth += iconSize
 
-            btnBookmark.layout(
-                usedWidth,
-                top,
-                usedWidth + iconSize,
-                bottom
-            )
+            btnBookmark.layout(usedWidth, top, usedWidth + iconSize, bottom)
             usedWidth += iconSize
 
-            btnShare.layout(
-                usedWidth,
-                top,
-                usedWidth + iconSize,
-                bottom
-            )
+            btnShare.layout(usedWidth, top, usedWidth + iconSize, bottom)
 
-            btnSettings.layout(
-                r - iconSize,
-                top,
-                r,
-                bottom
-            )
+            btnSettings.layout(r - iconSize, top, r, bottom)
         }
-
     }
 
     fun setSearchState(isSearch: Boolean) {
@@ -317,30 +294,10 @@ class Bottombar @JvmOverloads constructor(
 
         override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
 
-            btnSearchClose.layout(
-                0,
-                0,
-                iconSize,
-                iconSize
-            )
-            tvSearchResult.layout(
-                iconSize,
-                0,
-                r - 2*iconSize,
-                iconSize
-            )
-            btnResultDown.layout(
-                r - 2*iconSize,
-                0,
-                r - iconSize,
-                iconSize
-            )
-            btnResultUp.layout(
-                r - iconSize,
-                0,
-                r,
-                iconSize
-            )
+            btnSearchClose.layout(0, 0, iconSize, iconSize)
+            tvSearchResult.layout(iconSize, 0, r - 2*iconSize, iconSize)
+            btnResultDown.layout(r - 2*iconSize, 0, r - iconSize, iconSize)
+            btnResultUp.layout(r - iconSize, 0, r, iconSize)
         }
 
     }
