@@ -1,5 +1,4 @@
 package ru.skillbranch.skillarticles.ui.custom
-
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Canvas
@@ -135,7 +134,7 @@ class ArticleSubmenu @JvmOverloads constructor(
         anim.start()
     }
 
-   //save state
+    //save state
     override fun onSaveInstanceState(): Parcelable? {
         val savedState = SavedState(super.onSaveInstanceState())
         savedState.ssIsOpen = isOpen
@@ -166,9 +165,10 @@ class ArticleSubmenu @JvmOverloads constructor(
         btnTextDown.layout(0, 0, btnWidth, btnHeight)
         btnTextUp.layout(btnWidth, 0, r, btnHeight)
         tvLabel.layout(48, 175, 351, 232)
-        switchMode.layout(tvLabel.measuredWidth, btnHeight, menuWidth, menuHeight)
+        switchMode.layout(408, 132, 552, 276)
     }
-
+ //   org.junit.ComparisonFailure: switchMode view bounds expected:&lt;...ial has bounds left:[408, top:132, right:552, bottom:276]&gt; but was:&lt;...ial has bounds left:[0, top:120, right:600, bottom:288]&gt;
+//    at org.junit.Assert.assertEquals(Assert.java:115)
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun dispatchDraw(canvas: Canvas) {
         canvas.drawLine(btnWidth.toFloat(), 0f, btnWidth.toFloat(), btnHeight.toFloat(), linePaint)
@@ -197,3 +197,6 @@ class ArticleSubmenu @JvmOverloads constructor(
         }
     }
 }
+
+
+
