@@ -138,7 +138,7 @@ class MarkdownContentView @JvmOverloads constructor(
                         context,
                         textSize,
                         it.image.url,
-                        it.image.text,
+                        it.image.text.toString(),
                         it.image.alt
                     )
                     id = View.generateViewId()
