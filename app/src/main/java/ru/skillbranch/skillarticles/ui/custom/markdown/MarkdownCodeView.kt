@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Parcel
+import android.os.Parcelable
 import android.text.Selection
 import android.text.Spannable
 import android.util.Log
@@ -15,6 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.attrValue
@@ -194,6 +197,38 @@ class MarkdownCodeView private constructor(
             right,
             usedHeight + svScroll.measuredHeight
         )
+    }
+
+    //save state
+    override fun onSaveInstanceState(): Parcelable? {
+        val savedState = SavedStateCodeView(super.onSaveInstanceState())
+        savedState.isDark = isDark
+        return savedState
+    }
+
+    //restore state
+    override fun onRestoreInstanceState(state: Parcelable) {
+        super.onRestoreInstanceState(state)
+        if (state is SavedStateCodeView) {
+            isDark = state.isDark
+        }
+    }
+    private class SavedStateCodeView: BaseSavedState, Parcelable {
+        var isDark = false
+        constructor(superState: Parcelable?) : super(superState)
+
+        constructor(src: Parcel) : super(src) {
+            isDark = src.readInt() == 1
+        }
+
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeInt(if (isDark) 1 else 0)
+        }
+        companion object CREATOR : Parcelable.Creator<SavedStateCodeView> {
+            override fun createFromParcel(parcel: Parcel) = SavedStateCodeView(parcel)
+            override fun newArray(size: Int): Array<SavedStateCodeView?> = arrayOfNulls(size)
+        }
     }
 
     override fun renderSearchPosition(searchPosition: Pair<Int, Int>, offset: Int) {

@@ -122,9 +122,10 @@ class Bottombar @JvmOverloads constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
         val height = iconSize
-        setMeasuredDimension(width, height)
+        setMeasuredDimension(parentWidth, height)
     }
 
 
