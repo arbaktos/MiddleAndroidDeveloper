@@ -134,7 +134,6 @@ class Bottombar @JvmOverloads constructor(
         var usedWidth = 0
         val top = 0
         val bottom = iconSize
-        val right = r - paddingRight
 
         if (isSearchMode) {
             searchBar.layout(
@@ -168,9 +167,9 @@ class Bottombar @JvmOverloads constructor(
             )
 
             btnSettings.layout(
-                right - iconSize,
+                r - iconSize,
                 top,
-                right,
+                r,
                 bottom
             )
         }

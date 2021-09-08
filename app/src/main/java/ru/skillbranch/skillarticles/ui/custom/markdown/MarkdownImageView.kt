@@ -98,7 +98,6 @@ class MarkdownImageView private constructor(
             typeface = Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL)
             setPaddingOptionally(left = titlePadding, right = titlePadding)
         }
-
         addView(tvTitle)
     }
 
@@ -106,9 +105,10 @@ class MarkdownImageView private constructor(
         context: Context,
         fontSize: Float,
         url: String,
-        title: CharSequence,
+        title: String,
         alt: String?
     ) : this(context, fontSize) {
+
         imageUrl = url
         imageTitle = title
 
@@ -142,7 +142,6 @@ class MarkdownImageView private constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        isSaveEnabled = true
         var usedHeight = 0
         val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
 
@@ -175,7 +174,6 @@ class MarkdownImageView private constructor(
             right,
             usedHeight + ivImage.measuredHeight
         )
-
         usedHeight += ivImage.measuredHeight + titleTopMargin
 
         tvTitle.layout(
@@ -187,7 +185,7 @@ class MarkdownImageView private constructor(
 
         tvAlt?.layout(
             left,
-            usedHeight,
+            ivImage.measuredHeight - (tvAlt?.measuredHeight ?: 0),
             right,
             ivImage.measuredHeight
         )

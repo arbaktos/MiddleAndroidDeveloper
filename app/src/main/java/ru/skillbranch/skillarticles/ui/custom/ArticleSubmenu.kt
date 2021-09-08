@@ -165,7 +165,7 @@ class ArticleSubmenu @JvmOverloads constructor(
     public override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
         btnTextDown.layout(0, 0, btnWidth, btnHeight)
         btnTextUp.layout(btnWidth, 0, r, btnHeight)
-        tvLabel.layout(0, btnHeight, tvLabel.measuredWidth, menuHeight)
+        tvLabel.layout(48, 175, 351, 232)
         switchMode.layout(tvLabel.measuredWidth, btnHeight, menuWidth, menuHeight)
     }
 
