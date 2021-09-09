@@ -145,7 +145,8 @@ class MarkdownCodeView private constructor(
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var usedHeight = 0
         val width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
-        measureChild(svScroll, widthMeasureSpec, heightMeasureSpec)
+        val scrollMs = MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED)
+        svScroll.measure(scrollMs, heightMeasureSpec)
         measureChild(ivCopy, widthMeasureSpec, heightMeasureSpec)
 
         usedHeight += svScroll.measuredHeight + paddingTop + paddingBottom
