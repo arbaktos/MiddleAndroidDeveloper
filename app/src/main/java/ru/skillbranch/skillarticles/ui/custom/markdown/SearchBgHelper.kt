@@ -16,6 +16,7 @@ import ru.skillbranch.skillarticles.ui.custom.spans.HeaderSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchFocusSpan
 import ru.skillbranch.skillarticles.ui.custom.spans.SearchSpan
 
+
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 class SearchBgHelper(
     context: Context,
@@ -115,6 +116,7 @@ class SearchBgHelper(
 
             //if search
             if (it is SearchFocusSpan) {
+                //if search ficus invoke for focus
                 focusListener(layout.getLineTop(startLine), layout.getLineBottom(endLine))
             }
 
@@ -125,8 +127,9 @@ class SearchBgHelper(
                         if (spanStart in firstLineBounds || spanEnd in firstLineBounds) topExtraPadding else 0
 
                     this@SearchBgHelper.bottomExtraPadding =
-                        if (spanStart in lastLineBounds || spanEnd in lastLineBounds) topExtraPadding else 0
+                        if (spanStart in lastLineBounds || spanEnd in lastLineBounds) bottomExtraPadding else 0
                 }
+
             }
 
             startOffset = layout.getPrimaryHorizontal(spanStart).toInt()
@@ -134,12 +137,17 @@ class SearchBgHelper(
 
             render = if (startLine == endLine) singleLineRender else multiLineRender
             render.draw(
-                canvas, layout, startLine, endLine, startOffset, endOffset, topExtraPadding, bottomExtraPadding
+                canvas,
+                layout,
+                startLine,
+                endLine,
+                startOffset,
+                endOffset,
+                topExtraPadding,
+                bottomExtraPadding
             )
-
         }
     }
-
 }
 
 abstract class SearchBgRender(val padding: Int) {
@@ -167,7 +175,6 @@ class SingleLineRender(
     padding: Int,
     val drawable: Drawable
     ): SearchBgRender(padding) {
-
     private var lineTop: Int = 0
     private var lineBottom: Int = 0
 
@@ -244,7 +251,7 @@ class MultiLineRender(
         bottom: Int,
     ) {
         drawableLeft.setBounds(start, top, end, bottom)
-        drawableRight.draw(canvas)
+        drawableLeft.draw(canvas)
     }
 
     private fun drawEnd(

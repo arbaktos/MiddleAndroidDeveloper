@@ -33,12 +33,13 @@ fun Context.dpToIntPx(dp: Int): Int {
     ).toInt()
 }
 
-fun Context.attrValue(@AttrRes attr: Int): Int  {
-    val _value: Int
+fun Context.attrValue(@AttrRes res: Int, needRes: Boolean = false): Int  {
+    val value: Int?
     val tv = TypedValue()
-    if(this.theme.resolveAttribute(attr, tv, true)) _value = tv.data
-    else throw Resources.NotFoundException("Resource with id $attr not found_extension")
-    return _value
+    val resolveAttribute = this.theme.resolveAttribute(res, tv, true)
+    if(resolveAttribute) value = if (needRes) tv.resourceId else tv.data
+    else throw Resources.NotFoundException("Resource with id $res not found_extension")
+    return value
 }
 
 fun Context.hideKeyboard(view: View) {
@@ -46,7 +47,7 @@ fun Context.hideKeyboard(view: View) {
     imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-
+@Suppress("DEPRECATION")
 val Context.isNetworkAvailable: Boolean
     get() {
         val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

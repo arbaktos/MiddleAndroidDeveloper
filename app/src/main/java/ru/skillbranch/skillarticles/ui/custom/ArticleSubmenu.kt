@@ -42,9 +42,7 @@ class ArticleSubmenu @JvmOverloads constructor(
     @ColorInt private var lineColor: Int = context.getColor(R.color.color_divider)
     @ColorInt private val textColor = context.attrValue(R.attr.colorOnSurface)
     private val iconTint = context.getColorStateList(R.color.tint_color)
-    //private val iconTint = context.getColorStateList(R.color.black)
-    @DrawableRes private val bg = context.attrValue(R.attr.selectableItemBackground)//, needRes = true)
-    private val bgColor = context.getColor(R.color.color_article_bar)
+    @DrawableRes private val bg = context.attrValue(R.attr.selectableItemBackground, needRes = true)
 
     //views
     val btnTextDown: CheckableImageView
@@ -60,16 +58,16 @@ class ArticleSubmenu @JvmOverloads constructor(
     }
 
     init {
+
         val materialBg = MaterialShapeDrawable.createWithElevationOverlay(context)
         materialBg.elevation = elevation
-        setBackgroundColor(bgColor)
+        setBackgroundColor(bg)
         background = materialBg
 
         btnTextDown = CheckableImageView(context).apply {
             setImageResource(R.drawable.ic_title_black_24dp)
-            setPadding(defaultPadding)
             imageTintList = iconTint
-            backgroundTintList = ColorStateList.valueOf(bg)
+            setPadding(defaultPadding)
         }
         addView(btnTextDown)
 
@@ -152,23 +150,18 @@ class ArticleSubmenu @JvmOverloads constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-//        measureChild(btnTextUp, widthMeasureSpec, heightMeasureSpec)
-//        measureChild(btnTextDown, widthMeasureSpec, heightMeasureSpec)
-//        measureChild(tvLabel, widthMeasureSpec, heightMeasureSpec)
-//        measureChild(switchMode, widthMeasureSpec, heightMeasureSpec)
-
         setMeasuredDimension(menuWidth, menuHeight)
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
+
         btnTextDown.layout(0, 0, btnWidth, btnHeight)
-        btnTextUp.layout(btnWidth, 0, r, btnHeight)
-        tvLabel.layout(48, 175, 351, 232)
-        switchMode.layout(408, 132, 552, 276)
+        btnTextUp.layout(btnWidth- defaultPadding, 0, r, btnHeight)
+        tvLabel.layout(paddingLeft, btnHeight, tvLabel.measuredWidth, tvLabel.measuredHeight)
+        switchMode.layout(btnWidth, btnHeight, r, btnHeight*2)
     }
- //   org.junit.ComparisonFailure: switchMode view bounds expected:&lt;...ial has bounds left:[408, top:132, right:552, bottom:276]&gt; but was:&lt;...ial has bounds left:[0, top:120, right:600, bottom:288]&gt;
-//    at org.junit.Assert.assertEquals(Assert.java:115)
+
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun dispatchDraw(canvas: Canvas) {
         canvas.drawLine(btnWidth.toFloat(), 0f, btnWidth.toFloat(), btnHeight.toFloat(), linePaint)

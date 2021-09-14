@@ -37,7 +37,7 @@
 
         <ru.skillbranch.skillarticles.ui.custom.markdown.MarkdownContentView
             android:id="@+id/tv_text_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:focusable="true"
@@ -62,7 +62,7 @@
     <ru.skillbranch.skillarticles.ui.custom.Bottombar
         android:id="@+id/bottombar"
         android:theme="@style/ArticleBarsTheme"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="4dp"

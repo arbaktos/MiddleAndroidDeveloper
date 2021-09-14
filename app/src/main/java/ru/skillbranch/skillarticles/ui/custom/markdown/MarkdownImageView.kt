@@ -1,5 +1,4 @@
 package ru.skillbranch.skillarticles.ui.custom.markdown
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
@@ -24,7 +23,6 @@ import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.dpToPx
 import ru.skillbranch.skillarticles.extensions.setPaddingOptionally
-import ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
 import java.nio.charset.Charset
 import java.security.MessageDigest
 import kotlin.math.hypot
@@ -77,7 +75,6 @@ class MarkdownImageView private constructor(
     }
 
     init {
-        isSaveEnabled = true
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         ivImage = ImageView(context).apply {
             outlineProvider = object : ViewOutlineProvider() {
@@ -201,6 +198,7 @@ class MarkdownImageView private constructor(
             linePositionY,
             linePaint
         )
+
         canvas.drawLine(
             canvas.width - titlePadding.toFloat(),
             linePositionY,
