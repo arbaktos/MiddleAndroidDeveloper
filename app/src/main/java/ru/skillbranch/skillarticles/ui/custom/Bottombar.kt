@@ -3,17 +3,10 @@ package ru.skillbranch.skillarticles.ui.custom
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
-import android.text.Layout
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -22,13 +15,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
-import androidx.core.graphics.withTranslation
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import com.google.android.material.shape.MaterialShapeDrawable
 import ru.skillbranch.skillarticles.R
-import ru.skillbranch.skillarticles.databinding.LayoutBottombarBinding
 import ru.skillbranch.skillarticles.extensions.attrValue
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.ui.custom.behaviors.BottombarBehavior
@@ -69,6 +59,10 @@ class Bottombar @JvmOverloads constructor(
      }
 
     init {
+        layoutParams = CoordinatorLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).apply {
+            gravity = Gravity.BOTTOM
+            insetEdge = Gravity.BOTTOM
+        }
         searchBar = SearchBar()
         addView(searchBar)
 
@@ -122,19 +116,14 @@ class Bottombar @JvmOverloads constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
-        val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
-        val width = View.getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+        val width = getDefaultSize(minimumWidth, widthMeasureSpec)
         val height = iconSize
-        Log.d("Bottombar", "parentWidth = $parentWidth")
-        Log.d("Bottombar", "Width = $width")
-        setMeasuredDimension(parentWidth, height)
+        setMeasuredDimension(width, height)
     }
 
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        Log.d("Bottombar", "l = $l, t = $t, r = $r, b = $b")
         var usedWidth = 0
         val top = 0
         val bottom = iconSize
@@ -293,7 +282,6 @@ class Bottombar @JvmOverloads constructor(
         }
 
         override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
-
             btnSearchClose.layout(0, 0, iconSize, iconSize)
             tvSearchResult.layout(iconSize, 0, r - 2*iconSize, iconSize)
             btnResultDown.layout(r - 2*iconSize, 0, r - iconSize, iconSize)

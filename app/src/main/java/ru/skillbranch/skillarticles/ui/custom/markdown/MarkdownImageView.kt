@@ -75,6 +75,7 @@ class MarkdownImageView private constructor(
     }
 
     init {
+        isSaveEnabled = true
         layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         ivImage = ImageView(context).apply {
             outlineProvider = object : ViewOutlineProvider() {
