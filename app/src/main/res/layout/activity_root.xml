@@ -45,19 +45,19 @@
             android:clipToPadding="false"/>
     </androidx.core.widget.NestedScrollView>
 
-    <ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
-        android:id="@+id/submenu"
-        android:layout_width="200dp"
-        android:layout_height="96dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:addStatesFromChildren="false"
-        android:layout_gravity="bottom|end"
-        android:elevation="8dp"
-        android:theme="@style/ArticleBarsTheme"
-        tools:visibility="visible"
-        android:visibility="gone"
-        app:layout_dodgeInsetEdges="bottom" />
+<!--    <ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu-->
+<!--        android:id="@+id/submenu"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="96dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:addStatesFromChildren="false"-->
+<!--        android:layout_gravity="bottom|end"-->
+<!--        android:elevation="8dp"-->
+<!--        android:theme="@style/ArticleBarsTheme"-->
+<!--        tools:visibility="visible"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_dodgeInsetEdges="bottom" />-->
 
     <ru.skillbranch.skillarticles.ui.custom.Bottombar
         android:id="@+id/bottombar"

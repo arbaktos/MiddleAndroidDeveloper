@@ -1,13 +1,10 @@
 package ru.skillbranch.skillarticles.ui.custom
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewAnimationUtils
@@ -26,17 +23,17 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.attrValue
-import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.dpToPx
 import ru.skillbranch.skillarticles.ui.custom.behaviors.SubmenuBehavior
 import kotlin.math.hypot
 
 
-class ArticleSubmenu @JvmOverloads constructor(
+class ArticleSubmenu @JvmOverloads constructor (
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : ViewGroup(ContextThemeWrapper(context, R.style.ArticleBarsTheme), attrs, defStyleAttr) , CoordinatorLayout.AttachedBehavior {
+    ) : ViewGroup(context, attrs, defStyleAttr)
+    , CoordinatorLayout.AttachedBehavior {
     //settings
     @Px private val menuWidth = context.dpToIntPx(200)
     @Px private val menuHeight = context.dpToIntPx(96)
@@ -64,18 +61,13 @@ class ArticleSubmenu @JvmOverloads constructor(
 
     init {
 
-//        val materialBg = MaterialShapeDrawable.createWithElevationOverlay(context)
-//        materialBg.elevation = elevation
-//        //setBackgroundColor(bg)
-//        background = materialBg
-
-        id = R.id.submenu
+//        id = 5
         val marg = context.dpToIntPx(8)
         val elev = context.dpToPx(8)
         layoutParams =
             CoordinatorLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
                 .apply {
-                    gravity = Gravity.BOTTOM or Gravity.RIGHT
+                    gravity = Gravity.BOTTOM or Gravity.END
                     dodgeInsetEdges = Gravity.BOTTOM
                     setMargins(0, 0, marg, marg)
                 }

@@ -4,7 +4,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -20,10 +19,10 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import ru.skillbranch.skillarticles.R
 import ru.skillbranch.skillarticles.databinding.ActivityRootBinding
-import ru.skillbranch.skillarticles.databinding.LayoutBottombarBinding.inflate
 import ru.skillbranch.skillarticles.extensions.dpToIntPx
 import ru.skillbranch.skillarticles.extensions.hideKeyboard
 import ru.skillbranch.skillarticles.extensions.setMarginOptionally
+import ru.skillbranch.skillarticles.ui.custom.ArticleSubmenu
 import ru.skillbranch.skillarticles.ui.custom.Bottombar
 import ru.skillbranch.skillarticles.ui.delegates.viewBinding
 import ru.skillbranch.skillarticles.viewmodels.*
@@ -35,14 +34,18 @@ class RootActivity : AppCompatActivity(), IArticleView {
     private val viewModel: ArticleViewModel by viewModels { viewModelFactory }
     private val vb: ActivityRootBinding by viewBinding(ActivityRootBinding::inflate)
 
-    private val vbBotoombar
+    private val vbBottombar
         get() = vb.bottombar
-    private val vbSubmenu
-        get() = vb.submenu
+    private lateinit var vbSubmenu: ArticleSubmenu
+//        get() = vb.submenu
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        vbSubmenu = ArticleSubmenu(this)
+//        vbSubmenu.id = 5
+        vb.coordinatorContainer.addView(vbSubmenu)
 
        // addContentView(Bottombar(this), Bottombar(this).layoutParams)
         setupToolbar()
@@ -109,7 +112,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
 
     private fun renderNotification(notify: Notify) {
         val snackbar = Snackbar.make(vb.coordinatorContainer, notify.message, Snackbar.LENGTH_LONG)
-            .setAnchorView(vb.bottombar)
+            .setAnchorView(vbBottombar)
 
         when(notify) {
 
@@ -149,7 +152,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun setupBottombar() {
-        with (vbBotoombar) {
+        with (vbBottombar) {
             btnLike.setOnClickListener { viewModel.handleLike() }
             btnBookmark.setOnClickListener { viewModel.handleBookmark() }
             btnShare.setOnClickListener { viewModel.handleShare() }
@@ -176,7 +179,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun renderBotombar(data: BottombarData) {
-        with(vbBotoombar) {
+        with(vbBottombar) {
             btnSettings.isChecked = data.isShowMenu
             btnLike.isChecked = data.isLike
             btnBookmark.isChecked = data.isBookmark
@@ -204,7 +207,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
             btnTextDown.isChecked = !data.isBigText
             btnTextUp.isChecked = data.isBigText
         }
-        if (data.isShowMenu) vb.submenu.open() else vb.submenu.close()
+        if (data.isShowMenu) vbSubmenu.open() else vbSubmenu.close()
     }
 
     override fun renderUi(data: ArticleState) {
@@ -264,7 +267,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun showSearchBar(resultsCount: Int, searchPosition: Int) {
-        with(vb.bottombar) {
+        with(vbBottombar) {
             setSearchState(true)
             setSearchInfo(resultsCount, searchPosition)
         }
@@ -272,7 +275,7 @@ class RootActivity : AppCompatActivity(), IArticleView {
     }
 
     override fun hideSearchBar() {
-        with(vb.bottombar) {
+        with(vbBottombar) {
             setSearchState(false)
         }
         vb.scroll.setMarginOptionally(bottom = dpToIntPx(0))
