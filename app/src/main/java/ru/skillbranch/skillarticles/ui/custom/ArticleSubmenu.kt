@@ -176,11 +176,6 @@ class ArticleSubmenu (context: Context) :
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun onLayout(p0: Boolean, l: Int, t: Int, r: Int, b: Int) {
-
-//        btnTextDown.layout(0, 0, btnWidth, btnHeight)
-//        btnTextUp.layout(btnWidth- defaultPadding, 0, r, btnHeight)
-//        tvLabel.layout(paddingLeft, btnHeight, tvLabel.measuredWidth, tvLabel.measuredHeight)
-//        switchMode.layout(btnWidth, btnHeight, r, btnHeight*2)
         val bodyWidth = r - l - paddingLeft - paddingRight
         val left = paddingLeft
         val right = paddingLeft + bodyWidth
@@ -204,7 +199,7 @@ class ArticleSubmenu (context: Context) :
         val deltaHLabel = (menuHeight - usedHeight - tvLabel.measuredHeight) / 2
 
         tvLabel.layout(
-            left + defaultPadding,
+            left,
             usedHeight + deltaHLabel,
             left + defaultPadding + tvLabel.measuredWidth,
             usedHeight + deltaHLabel + tvLabel.measuredHeight
