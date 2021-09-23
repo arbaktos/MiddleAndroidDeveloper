@@ -40,7 +40,7 @@ class SearchBgHelper(
         mockDrawableRight = null
     )
 
-    private val padding: Int = context.dpToIntPx(4)
+    private val padding: Int = context.dpToIntPx(2) //4 in the given code
     private val borderWidth: Int = context.dpToIntPx(1)
     private val radius: Float = context.dpToPx(8)
 
@@ -221,7 +221,7 @@ class MultiLineRender(
         lineEndOffset = (layout.getLineRight(startLine) + padding).toInt()
         lineTop = getLineTop(layout, startLine) + topExtraPadding
         lineBottom = getLineBottom(layout, startLine)
-        drawStart(canvas, startOffset + padding, lineTop, lineEndOffset, lineBottom)
+        drawStart(canvas, startOffset - padding, lineTop, lineEndOffset, lineBottom)
 
         //draw middle line
         for (line in startLine.inc() until endLine) {
