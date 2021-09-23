@@ -221,7 +221,7 @@ class MultiLineRender(
         lineEndOffset = (layout.getLineRight(startLine) + padding).toInt()
         lineTop = getLineTop(layout, startLine) + topExtraPadding
         lineBottom = getLineBottom(layout, startLine)
-        drawStart(canvas, startOffset - padding, lineTop, lineEndOffset, lineBottom)
+        drawStart(canvas, startOffset, lineTop, lineEndOffset, lineBottom)
 
         //draw middle line
         for (line in startLine.inc() until endLine) {
