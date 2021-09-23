@@ -44,7 +44,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
         super.onCreate(savedInstanceState)
 
         vbSubmenu = ArticleSubmenu(this)
-//        vbSubmenu.id = 5
         vb.coordinatorContainer.addView(vbSubmenu)
 
        // addContentView(Bottombar(this), Bottombar(this).layoutParams)
@@ -99,7 +98,6 @@ class RootActivity : AppCompatActivity(), IArticleView {
                 viewModel.handleSearch(newText)
                 return true
             }
-
         })
 
         return super.onCreateOptionsMenu(menu)

@@ -28,12 +28,10 @@ import ru.skillbranch.skillarticles.ui.custom.behaviors.SubmenuBehavior
 import kotlin.math.hypot
 
 
-class ArticleSubmenu @JvmOverloads constructor (
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-    ) : ViewGroup(context, attrs, defStyleAttr)
-    , CoordinatorLayout.AttachedBehavior {
+class ArticleSubmenu (context: Context) :
+    ViewGroup(ContextThemeWrapper(context, R.style.ArticleBarsTheme), null, 0),
+    CoordinatorLayout.AttachedBehavior {
+
     //settings
     @Px private val menuWidth = context.dpToIntPx(200)
     @Px private val menuHeight = context.dpToIntPx(96)
@@ -45,6 +43,7 @@ class ArticleSubmenu @JvmOverloads constructor (
     @ColorInt private val textColor = context.attrValue(R.attr.colorOnSurface)
     private val iconTint = context.getColorStateList(R.color.tint_color)
     @DrawableRes private val bg = context.attrValue(R.attr.selectableItemBackground, needRes = true)
+    @IdRes private val avID = generateViewId()
 
     //views
     val btnTextDown: CheckableImageView
@@ -61,7 +60,7 @@ class ArticleSubmenu @JvmOverloads constructor (
 
     init {
 
-//        id = 5
+        id = R.id.submenu
         val marg = context.dpToIntPx(8)
         val elev = context.dpToPx(8)
         layoutParams =
@@ -90,8 +89,8 @@ class ArticleSubmenu @JvmOverloads constructor (
         addView(btnTextDown)
 
         btnTextUp = CheckableImageView(context).apply {
-//            setImageResource(R.drawable.ic_title_black_24dp)
-            setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_title_black_24dp))
+            setImageResource(R.drawable.ic_title_black_24dp)
+            //setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_title_black_24dp))
             setBackgroundResource(bg)
             setPadding(smallPadding)
             imageTintList = iconTint
@@ -222,6 +221,7 @@ class ArticleSubmenu @JvmOverloads constructor (
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public override fun dispatchDraw(canvas: Canvas) {
+        super.dispatchDraw(canvas)
         canvas.drawLine(btnWidth.toFloat(), 0f, btnWidth.toFloat(), btnHeight.toFloat(), linePaint)
         canvas.drawLine(0f, btnHeight.toFloat(), menuWidth.toFloat(), btnHeight.toFloat(),linePaint)
     }
