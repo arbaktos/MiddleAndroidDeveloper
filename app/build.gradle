@@ -66,4 +66,5 @@ dependencies {
     androidTestImplementation "com.github.tmurakami:dexopener:2.0.5"
     implementation 'com.github.wseemann:FFmpegMediaMetadataRetriever-native:1.0.15'
 
+
 }

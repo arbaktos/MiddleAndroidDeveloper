@@ -40,7 +40,7 @@ class SearchBgHelper(
         mockDrawableRight = null
     )
 
-    private val padding: Int = context.dpToIntPx(2) //4 in the given code
+    private val padding: Int = context.dpToIntPx(3) //4 in the given code
     private val borderWidth: Int = context.dpToIntPx(1)
     private val radius: Float = context.dpToPx(8)
 
