@@ -76,7 +76,7 @@ class MarkdownImageView private constructor(
 
     init {
         isSaveEnabled = true
-        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         ivImage = ImageView(context).apply {
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
@@ -145,7 +145,7 @@ class MarkdownImageView private constructor(
 
         //create measured spec for children exactly
         //all children width == parent width (constraint parent width)
-        val ms = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+        val ms = MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED)
 
         ivImage.measure(ms, heightMeasureSpec)
         tvTitle.measure(ms, heightMeasureSpec)
