@@ -11,10 +11,13 @@ import java.util.*
 
 object LocalDataHolder {
     private var isDelay = true
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val articleData = MutableLiveData<ArticleData?>(null)
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val articleInfo = MutableLiveData<ArticlePersonalInfo?>(null)
+
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val settings = MutableLiveData(AppSettings())
 
@@ -22,13 +25,13 @@ object LocalDataHolder {
     fun findArticle(articleId: String): LiveData<ArticleData?> {
         GlobalScope.launch {
             if (isDelay) delay(1000)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 articleData.value = ArticleData(
-                        title = "CoordinatorLayout Basic",
-                        category = "Android",
-                        categoryIcon = R.drawable.logo,
-                        date = Date(),
-                        author = "Skill-Branch"
+                    title = "CoordinatorLayout Basic",
+                    category = "Android",
+                    categoryIcon = R.drawable.logo,
+                    date = Date(),
+                    author = "Skill-Branch"
                 )
             }
 
@@ -40,7 +43,7 @@ object LocalDataHolder {
     fun findArticlePersonalInfo(articleId: String): LiveData<ArticlePersonalInfo?> {
         GlobalScope.launch {
             if (isDelay) delay(500)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 articleInfo.value = ArticlePersonalInfo(true)
             }
         }
@@ -57,14 +60,14 @@ object LocalDataHolder {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun clearData(){
+    fun clearData() {
         articleInfo.postValue(null)
         articleData.postValue(null)
         settings.postValue(AppSettings())
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun disableDelay(value:Boolean = false) {
+    fun disableDelay(value: Boolean = false) {
         isDelay = !value
     }
 }
@@ -77,7 +80,7 @@ object NetworkDataHolder {
     fun loadArticleContent(articleId: Any): LiveData<List<String>?> {
         GlobalScope.launch {
             if (isDelay) delay(1500)
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 content.value = listOf(longText)
             }
 
@@ -86,35 +89,35 @@ object NetworkDataHolder {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun disableDelay(value:Boolean = false) {
+    fun disableDelay(value: Boolean = false) {
         isDelay = !value
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun clearData(){
+    fun clearData() {
         content.postValue(null)
     }
 }
 
 data class ArticleData(
-        val shareLink: String? = null,
-        val title: String? = null,
-        val category: String? = null,
-        val categoryIcon: Any? = null,
-        val date: Date,
-        val author: Any? = null,
-        val poster: String? = null,
-        val content: List<Any> = emptyList()
+    val shareLink: String? = null,
+    val title: String? = null,
+    val category: String? = null,
+    val categoryIcon: Any? = null,
+    val date: Date,
+    val author: Any? = null,
+    val poster: String? = null,
+    val content: List<Any> = emptyList()
 )
 
 data class ArticlePersonalInfo(
-        val isLike: Boolean = false,
-        val isBookmark: Boolean = false
+    val isLike: Boolean = false,
+    val isBookmark: Boolean = false
 )
 
 data class AppSettings(
-        val isDarkMode: Boolean = false,
-        val isBigText: Boolean = false
+    val isDarkMode: Boolean = false,
+    val isBigText: Boolean = false
 )
 
 val longText: String = """
